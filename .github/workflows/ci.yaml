@@ -31,9 +31,5 @@ jobs:
       - run: npx nx format:check
       - run: npx nx affected --target=lint --parallel=3
       - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
-      - run: |
-          ls -al node_modules
-          ls -al node_modules/@nx-dart
-          ls -al node_modules/@nx-dart/dart-parser
       - run: npx nx affected --target=e2e --parallel=3
       - run: npx nx affected --target=build --parallel=3
