@@ -1,0 +1,15 @@
+{
+  "root": "packages/dart-parser",
+  "sourceRoot": "packages/dart-parser/lib",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["dist/packages/dart-parser"],
+      "options": {
+        "cwd": "packages/dart-parser",
+        "command": "./tool/build.sh"
+      }
+    }
+  }
+}

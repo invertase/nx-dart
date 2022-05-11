@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "projects": {
+    "dart-parser": "packages/dart-parser",
+    "nx-dart": "packages/nx-dart",
+    "nx-dart-e2e": "e2e/nx-dart-e2e"
+  }
+}
