@@ -3,5 +3,9 @@
   "version": "0.0.1",
   "main": "src/index.js",
   "generators": "./generators.json",
-  "executors": "./executors.json"
+  "executors": "./executors.json",
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "@nx-dart/dart-parser": "^0.0.1"
+  }
 }
