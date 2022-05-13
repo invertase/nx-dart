@@ -24,9 +24,9 @@ export async function setupWorkspaceForNxDart(
 async function addDependenciesToWorkspace(
   tree: Tree,
   {
-    install
+    install,
   }: {
-    install: boolean
+    install: boolean;
   }
 ) {
   // When a workspace is created with a preset, that preset will be added to the dependencies
