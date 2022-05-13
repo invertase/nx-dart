@@ -1,9 +1,13 @@
 import { Tree } from '@nrwl/devkit';
 import { setupWorkspaceForNxDart } from '../common/setup-workspace';
 
-export default async function (tree: Tree) {
+export default async function (
+  tree: Tree,
+  schemaOptions: unknown,
+  { installDependencies }: { installDependencies?: boolean } = {}
+) {
   await setupWorkspaceForNxDart(tree, {
-    installDependencies: true,
+    installDependencies: installDependencies ?? true,
     overwrite: true,
   });
 }
