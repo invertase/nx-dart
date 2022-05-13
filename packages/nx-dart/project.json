@@ -44,6 +44,12 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "dependencies"
+        }
+      ],
       "outputs": ["coverage/packages/nx-dart"],
       "options": {
         "jestConfig": "packages/nx-dart/jest.config.ts",

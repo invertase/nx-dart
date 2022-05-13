@@ -36,7 +36,6 @@
     "typescript": "~4.6.2"
   },
   "workspaces": [
-    "dist/packages/dart-parser",
-    "dist/packages/nx-dart"
+    "packages/dart-parser"
   ]
 }

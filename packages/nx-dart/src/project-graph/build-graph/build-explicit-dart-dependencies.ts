@@ -3,7 +3,7 @@ import {
   importsForFile,
   isDartFile,
   packageNameFromUri,
-} from '../../utils/dart_code';
+} from '../../utils/dart-code';
 import { DartPackageNodeResolver } from '../dart-package-node-resolver';
 import { ExplicityDependency } from './explicity-dependency';
 
@@ -22,7 +22,6 @@ export function buildExplicitDartDependencies(
               source,
               packageName
             );
-
             if (target) {
               result.push({
                 sourceNodeName: source,
