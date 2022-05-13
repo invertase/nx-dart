@@ -1,0 +1,20 @@
+import {
+  newNxProject,
+  readJson,
+  runNxCommandAsync,
+} from '@nrwl/nx-plugin/testing';
+
+describe('preset generator', () => {
+  beforeAll(() => {
+    newNxProject('@nx-dart/nx-dart', 'dist/packages/nx-dart');
+  });
+
+  afterAll(() => runNxCommandAsync('reset'));
+
+  it('smoke test', async () => {
+    await runNxCommandAsync('generate @nx-dart/nx-dart:preset');
+    const nxJson = readJson('nx.json');
+    expect(nxJson.cli?.defaultCollection).toBe('@nx-dart/nx-dart');
+    expect(nxJson.plugins).toContain('@nx-dart/nx-dart');
+  }, 120000);
+});
