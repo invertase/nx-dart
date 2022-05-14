@@ -12,7 +12,7 @@ describe('setup workspace', () => {
   });
 
   it('should add plugin to package.json', async () => {
-    await setupWorkspaceForNxDart(appTree, { lints: LintRules.Core });
+    await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
 
     const packageJson = readJson(appTree, 'package.json');
     expect(packageJson.devDependencies['@nx-dart/nx-dart']).toEqual(
@@ -21,26 +21,26 @@ describe('setup workspace', () => {
   });
 
   it('should add plugin to nx.json', async () => {
-    await setupWorkspaceForNxDart(appTree, { lints: LintRules.Core });
+    await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
     expectNxJsonHasPlugin(appTree);
   });
 
   it('should make plugin the default collection', async () => {
-    await setupWorkspaceForNxDart(appTree, { lints: LintRules.Core });
+    await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
     const nxJson = readJson(appTree, 'nx.json');
     expect(nxJson.cli.defaultCollection).toBe('@nx-dart/nx-dart');
   });
 
   describe('lints', () => {
     it('it should make analysis_options.yaml a universal implicit dependency', async () => {
-      await setupWorkspaceForNxDart(appTree, { lints: LintRules.Core });
+      await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
 
       const nxJson = readJson(appTree, 'nx.json');
       expect(nxJson.implicitDependencies['analysis_options.yaml']).toBe('*');
     });
 
     it('it should enable strict type checks', async () => {
-      await setupWorkspaceForNxDart(appTree, { lints: LintRules.Core });
+      await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
 
       const analysisOptions = appTree.read('analysis_options.yaml', 'utf8');
 
@@ -55,7 +55,7 @@ describe('setup workspace', () => {
     });
 
     it('it should support core lint rules', async () => {
-      await setupWorkspaceForNxDart(appTree, { lints: LintRules.Core });
+      await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
 
       expect(appTree.read('analysis_options.yaml', 'utf8')).toContain(
         'include: package:lints/core.yaml'
@@ -63,7 +63,7 @@ describe('setup workspace', () => {
     });
 
     it('it should support recommended lint rules', async () => {
-      await setupWorkspaceForNxDart(appTree, { lints: LintRules.Recommended });
+      await setupWorkspaceForNxDart(appTree, { lints: LintRules.recommended });
 
       expect(appTree.read('analysis_options.yaml', 'utf8')).toContain(
         'include: package:lints/recommended.yaml'
@@ -71,7 +71,7 @@ describe('setup workspace', () => {
     });
 
     it('it should support flutter lint rules', async () => {
-      await setupWorkspaceForNxDart(appTree, { lints: LintRules.Flutter });
+      await setupWorkspaceForNxDart(appTree, { lints: LintRules.flutter });
 
       expect(appTree.read('analysis_options.yaml', 'utf8')).toContain(
         'include: package:flutter_lints/flutter.yaml'
@@ -79,7 +79,7 @@ describe('setup workspace', () => {
     });
 
     it('it should support all lint rules', async () => {
-      await setupWorkspaceForNxDart(appTree, { lints: LintRules.All });
+      await setupWorkspaceForNxDart(appTree, { lints: LintRules.all });
 
       expect(appTree.read('analysis_options.yaml', 'utf8')).toContain(
         'linter:\n  rules:\n    -'
