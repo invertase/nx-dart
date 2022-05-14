@@ -1,13 +1,14 @@
 import {
+  ensureNxProject,
   newNxProject,
   readJson,
   runNxCommandAsync,
 } from '@nrwl/nx-plugin/testing';
 
 describe('preset generator', () => {
-  beforeAll(() => {
-    newNxProject('@nx-dart/nx-dart', 'dist/packages/nx-dart');
-  });
+  beforeAll(() => ensureNxProject('@nx-dart/nx-dart', 'dist/packages/nx-dart'));
+
+  beforeEach(() => newNxProject('@nx-dart/nx-dart', 'dist/packages/nx-dart'));
 
   afterAll(() => runNxCommandAsync('reset'));
 

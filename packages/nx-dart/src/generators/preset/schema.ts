@@ -1,9 +1,4 @@
-export enum LintRules {
-  core = 'core',
-  recommended = 'recommended',
-  flutter = 'flutter',
-  all = 'all',
-}
+import { LintRules } from '../common/setup-workspace';
 
 export interface PresetGeneratorSchema {
   lints: LintRules;
