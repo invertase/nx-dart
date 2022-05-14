@@ -1,12 +1,11 @@
+import { ensureNxProject, readJson, uniq } from '@nrwl/nx-plugin/testing';
 import {
-  ensureNxProject,
-  readJson,
+  addPackageDependency,
+  addPluginToNxJson,
+  addProjectToWorkspace,
   runCommandAsync,
   runNxCommandAsync,
-  uniq,
-  updateFile,
-} from '@nrwl/nx-plugin/testing';
-import * as YAML from 'yaml';
+} from './utils';
 
 describe('Project graph', () => {
   beforeAll(() => {
@@ -36,54 +35,3 @@ describe('Project graph', () => {
     ]);
   }, 120000);
 });
-
-function addPluginToNxJson(plugin: string) {
-  updateFile('nx.json', (contents) => {
-    const json = JSON.parse(contents);
-
-    const plugins: string[] = (json['plugins'] = json['plugins'] ?? []);
-    if (!plugins.includes(plugin)) {
-      plugins.push(plugin);
-    }
-
-    return JSON.stringify(json, null, 2);
-  });
-}
-
-function addProjectToWorkspace(
-  name: string,
-  { path, project }: { path?: string; project?: object } = {}
-) {
-  const projectPath = path ?? `libs/${name}`;
-
-  updateFile(`workspace.json`, (content) => {
-    const json = JSON.parse(content);
-
-    const projects = (json['projects'] = json['projects'] ?? {});
-    projects[name] = projectPath;
-
-    return JSON.stringify(json, null, 2);
-  });
-
-  updateFile(
-    `${projectPath}/project.json`,
-    JSON.stringify(project ?? {}, null, 2)
-  );
-}
-
-function addPackageDependency(
-  packageRoot: string,
-  name: string,
-  spec: unknown
-) {
-  updateFile(`${packageRoot}/pubspec.yaml`, (content) => {
-    const yaml = YAML.parse(content);
-
-    const dependencies = (yaml['dependencies'] = yaml['dependencies'] ?? {});
-    dependencies[name] = spec;
-
-    return YAML.stringify(yaml, {
-      indent: 2,
-    });
-  });
-}
