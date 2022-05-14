@@ -12,7 +12,7 @@ describe('preset generator', () => {
   afterAll(() => runNxCommandAsync('reset'));
 
   it('smoke test', async () => {
-    await runNxCommandAsync('generate @nx-dart/nx-dart:preset');
+    await runNxCommandAsync('generate @nx-dart/nx-dart:preset --lints core');
     const nxJson = readJson('nx.json');
     expect(nxJson.cli?.defaultCollection).toBe('@nx-dart/nx-dart');
     expect(nxJson.plugins).toContain('@nx-dart/nx-dart');

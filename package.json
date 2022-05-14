@@ -10,6 +10,7 @@
   "private": true,
   "dependencies": {
     "@nrwl/devkit": "^14.1.4",
+    "node-fetch": "^2.6.7",
     "tslib": "^2.3.0",
     "yaml": "^2.0.1"
   },
