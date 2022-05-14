@@ -8,7 +8,7 @@
       "outputs": ["packages/dart-parser/dist"],
       "options": {
         "cwd": "packages/dart-parser",
-        "command": "./tool/build.sh"
+        "command": "dart ./tool/build.dart"
       }
     }
   }
