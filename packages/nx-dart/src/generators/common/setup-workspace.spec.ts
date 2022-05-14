@@ -34,9 +34,9 @@ describe('setup workspace', () => {
   it('should add runtime cache input for Dart and Flutter', async () => {
     await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
     const nxJson = readJson(appTree, 'nx.json');
-    expect(nxJson.taskRunnerOptions.default.options.runtimeCacheInputs).toContain(
-      'flutter --version || dart --version'
-    );
+    expect(
+      nxJson.taskRunnerOptions.default.options.runtimeCacheInputs
+    ).toContain('flutter --version || dart --version');
   });
 
   describe('lints', () => {
