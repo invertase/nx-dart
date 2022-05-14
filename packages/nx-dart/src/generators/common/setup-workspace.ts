@@ -36,7 +36,7 @@ export async function setupWorkspaceForNxDart(
   await addDependenciesToWorkspace(tree, installDependencies);
   addNxPlugin(tree, '@nx-dart/nx-dart');
   setDefaultCollection(tree, '@nx-dart/nx-dart', overwrite);
-  addRuntimeCacheInput(tree, 'flutter --version || dart --version');
+  addRuntimeCacheInput(tree, 'default', 'flutter --version || dart --version');
   await setupAnalysisOptions(tree, options.lints, overwrite);
   await formatFiles(tree);
 }
