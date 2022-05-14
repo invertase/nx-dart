@@ -55,3 +55,28 @@ export function addFileToImplicitDependencies(
     };
   });
 }
+
+export function addRuntimeCacheInput(tree: Tree, input: string) {
+  updateJson(tree, 'nx.json', (nxJson) => {
+    const taskRunnerOptions = nxJson.taskRunnerOptions;
+    const defaultTaskRunner = taskRunnerOptions.default;
+    const options = defaultTaskRunner.options;
+    const runtimeCacheInputs = options.runtimeCacheInputs ?? [];
+    if (runtimeCacheInputs.includes(input)) {
+      return nxJson;
+    }
+    return {
+      ...nxJson,
+      taskRunnerOptions: {
+        ...taskRunnerOptions,
+        default: {
+          ...defaultTaskRunner,
+          options: {
+            ...options,
+            runtimeCacheInputs: [...runtimeCacheInputs, input],
+          },
+        },
+      },
+    };
+  });
+}

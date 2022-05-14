@@ -31,6 +31,14 @@ describe('setup workspace', () => {
     expect(nxJson.cli.defaultCollection).toBe('@nx-dart/nx-dart');
   });
 
+  it('should add runtime cache input for Dart and Flutter', async () => {
+    await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
+    const nxJson = readJson(appTree, 'nx.json');
+    expect(nxJson.taskRunnerOptions.default.options.runtimeCacheInputs).toContain(
+      'flutter --version || dart --version'
+    );
+  });
+
   describe('lints', () => {
     it('it should make analysis_options.yaml a universal implicit dependency', async () => {
       await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
