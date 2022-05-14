@@ -13,10 +13,10 @@ import {
 } from '../utils/nx-workspace';
 
 export enum LintRules {
-  core = 'core',
-  recommended = 'recommended',
-  flutter = 'flutter',
-  all = 'all',
+  Core = 'core',
+  Recommended = 'recommended',
+  Flutter = 'flutter',
+  All = 'all',
 }
 
 export interface SetupWorkspaceOptions {
@@ -79,16 +79,16 @@ async function buildAnalysisOptionsYaml(lints: LintRules) {
   let include: string | undefined;
   let linterSection: string;
   switch (lints) {
-    case LintRules.core:
+    case LintRules.Core:
       include = 'package:lints/core.yaml';
       break;
-    case LintRules.recommended:
+    case LintRules.Recommended:
       include = 'package:lints/recommended.yaml';
       break;
-    case LintRules.flutter:
+    case LintRules.Flutter:
       include = 'package:flutter_lints/flutter.yaml';
       break;
-    case LintRules.all:
+    case LintRules.All:
       linterSection = await downloadAllLintsConfig();
       break;
   }
