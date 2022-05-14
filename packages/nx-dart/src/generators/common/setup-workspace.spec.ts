@@ -1,4 +1,4 @@
-import { readJson, Tree } from '@nrwl/devkit';
+import { readJson, Tree, updateJson } from '@nrwl/devkit';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 import { nxDartPackageJson } from '../../utils/misc';
 import { expectNxJsonHasPlugin } from '../testing/asserts';
@@ -31,7 +31,15 @@ describe('setup workspace', () => {
     expect(nxJson.cli.defaultCollection).toBe('@nx-dart/nx-dart');
   });
 
-  it('should add runtime cache input for Dart and Flutter', async () => {
+  it('should add runtime cache input to default runner', async () => {
+    updateJson(appTree, 'nx.json', (json) => {
+      return {
+        ...json,
+        taskRunnerOptions: {
+          default: {},
+        },
+      };
+    });
     await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
     const nxJson = readJson(appTree, 'nx.json');
     expect(

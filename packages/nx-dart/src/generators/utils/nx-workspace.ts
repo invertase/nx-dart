@@ -58,9 +58,14 @@ export function addFileToImplicitDependencies(
 
 export function addRuntimeCacheInput(tree: Tree, input: string) {
   updateJson(tree, 'nx.json', (nxJson) => {
-    const taskRunnerOptions = nxJson.taskRunnerOptions;
-    const defaultTaskRunner = taskRunnerOptions.default;
-    const options = defaultTaskRunner.options;
+    const taskRunnerName = 'default';
+    const taskRunnerOptions = nxJson.taskRunnerOptions ?? {};
+    const taskRunner = taskRunnerOptions[taskRunnerName];
+    if (!taskRunner) {
+      return nxJson;
+    }
+
+    const options = taskRunner.options ?? {};
     const runtimeCacheInputs = options.runtimeCacheInputs ?? [];
     if (runtimeCacheInputs.includes(input)) {
       return nxJson;
@@ -69,8 +74,8 @@ export function addRuntimeCacheInput(tree: Tree, input: string) {
       ...nxJson,
       taskRunnerOptions: {
         ...taskRunnerOptions,
-        default: {
-          ...defaultTaskRunner,
+        [taskRunnerName]: {
+          ...taskRunner,
           options: {
             ...options,
             runtimeCacheInputs: [...runtimeCacheInputs, input],
