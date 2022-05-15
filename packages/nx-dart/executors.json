@@ -5,6 +5,11 @@
       "implementation": "./src/executors/format/executor",
       "schema": "./src/executors/format/schema.json",
       "description": "Formats Dart files."
+    },
+    "analyze": {
+      "implementation": "./src/executors/analyze/executor",
+      "schema": "./src/executors/analyze/schema.json",
+      "description": "Analyzes a Dart package."
     }
   }
 }

@@ -30,12 +30,9 @@ describe('format executor', () => {
     await expect(
       runNxCommandAsync(`run ${project}:format --check`)
     ).rejects.toThrowError();
-    let result = await runNxCommandAsync(
-      `run ${project}:format --check --verbose`,
-      {
-        silenceError: true,
-      }
-    );
+    let result = await runNxCommandAsync(`run ${project}:format --check`, {
+      silenceError: true,
+    });
     expect(result.stdout).toContain('Changed a.dart');
     expect(readFile(dartFile)).toBe(' const a = 1;');
 
