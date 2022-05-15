@@ -12,9 +12,10 @@ export function buildExplicitPubspecDependencies(
 
   for (const [source, files] of Object.entries(filesToProcess)) {
     const root = graph.nodes[source].data.root;
+    const pubspecPath = normalizePath(pub.pubspecPath(root));
 
     for (const file of files) {
-      if (file.file !== normalizePath(pub.pubspecPath(root))) {
+      if (file.file !== pubspecPath) {
         continue;
       }
 
