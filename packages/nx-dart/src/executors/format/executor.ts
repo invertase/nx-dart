@@ -15,6 +15,9 @@ export default async function runExecutor(
 ) {
   const graph: ProjectGraph<unknown> = await createProjectGraphAsync();
   const projectNode = graph.nodes[context.projectName];
+
+  // We pass the individual files to format, instead of the project root, because
+  // we don't want to format files in nested projects.
   const filePaths = filesToFormat(projectNode);
   const chunks = chunkify(filePaths, 10);
 
@@ -37,20 +40,22 @@ function filesToFormat(
 }
 
 function format(projectRoot: string, files: string[], check: boolean): boolean {
+  const command = buildFormatCommand(
+    check,
+    files.map((filePath) => path.relative(projectRoot, filePath))
+  );
+
   try {
-    execSync(
-      buildFormatCommand(
-        check,
-        files.map((filePath) => path.relative(projectRoot, filePath))
-      ),
-      {
-        stdio: 'inherit',
-        cwd: projectRoot,
-      }
-    );
+    execSync(command, {
+      stdio: 'inherit',
+      cwd: projectRoot,
+    });
 
     return true;
   } catch (e) {
+    if (e.status !== 1) {
+      throw e;
+    }
     return false;
   }
 }

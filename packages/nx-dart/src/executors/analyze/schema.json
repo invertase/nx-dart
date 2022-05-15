@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "Analyze executor",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "fatalInfos": {
+      "type": "boolean",
+      "description": "Treat info level issues as fatal.",
+      "default": true
+    },
+    "fatalWarnings": {
+      "type": "boolean",
+      "description": "Treat warning level issues as fatal.",
+      "default": true
+    }
+  },
+  "required": ["fatalInfos", "fatalWarnings"]
+}
