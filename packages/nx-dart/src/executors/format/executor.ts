@@ -15,6 +15,9 @@ export default async function runExecutor(
 ) {
   const graph: ProjectGraph<unknown> = await createProjectGraphAsync();
   const projectNode = graph.nodes[context.projectName];
+
+  // We pass the individual files to format, instead of the project root, because
+  // we don't want to format files in nested projects.
   const filePaths = filesToFormat(projectNode);
   const chunks = chunkify(filePaths, 10);
 

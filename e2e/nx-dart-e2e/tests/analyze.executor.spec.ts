@@ -38,7 +38,7 @@ linter:
 `
     );
     // lib/a.dart
-    const dartFile = path.normalize(`${projectPath}/lib/a.dart`);
+    const dartFile = `${projectPath}/lib/a.dart`;
     updateFile(dartFile, `void main() { print(''); }`);
 
     // Analyze package with lint error.
@@ -50,7 +50,9 @@ linter:
     });
     expect(result.stdout).toContain(`Analyzing ${project}`);
     expect(result.stdout).toContain(
-      'info - lib/a.dart:1:15 - Avoid `print` calls in production code. - avoid_print'
+      `info - ${path.normalize(
+        'lib/a.dart'
+      )}:1:15 - Avoid \`print\` calls in production code. - avoid_print`
     );
 
     updateFile(dartFile, `void main() {}`);
