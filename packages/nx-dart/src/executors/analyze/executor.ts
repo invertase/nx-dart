@@ -6,18 +6,22 @@ export default async function runExecutor(
   options: AnalyzeExecutorSchema,
   context: ExecutorContext
 ) {
+  const projectRoot = context.workspace.projects[context.projectName].root;
   const command = buildAnalyzeCommand(options);
 
   try {
     execSync(command, {
       stdio: 'inherit',
-      cwd: context.workspace.projects[context.projectName].root,
+      cwd: projectRoot,
     });
 
     return {
       success: true,
     };
   } catch (e) {
+    if (e.status !== 1) {
+      throw e;
+    }
     return {
       success: false,
     };

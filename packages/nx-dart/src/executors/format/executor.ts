@@ -37,20 +37,22 @@ function filesToFormat(
 }
 
 function format(projectRoot: string, files: string[], check: boolean): boolean {
+  const command = buildFormatCommand(
+    check,
+    files.map((filePath) => path.relative(projectRoot, filePath))
+  );
+
   try {
-    execSync(
-      buildFormatCommand(
-        check,
-        files.map((filePath) => path.relative(projectRoot, filePath))
-      ),
-      {
-        stdio: 'inherit',
-        cwd: projectRoot,
-      }
-    );
+    execSync(command, {
+      stdio: 'inherit',
+      cwd: projectRoot,
+    });
 
     return true;
   } catch (e) {
+    if (e.status !== 1) {
+      throw e;
+    }
     return false;
   }
 }

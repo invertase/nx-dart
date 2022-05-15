@@ -1,4 +1,5 @@
 import { ensureNxProject, uniq, updateFile } from '@nrwl/nx-plugin/testing';
+import * as path from 'path';
 import { addProjectToWorkspace, runNxCommandAsync } from './utils';
 
 describe('analyze executor', () => {
@@ -37,7 +38,7 @@ linter:
 `
     );
     // lib/a.dart
-    const dartFile = `${projectPath}/lib/a.dart`;
+    const dartFile = path.normalize(`${projectPath}/lib/a.dart`);
     updateFile(dartFile, `void main() { print(''); }`);
 
     // Analyze package with lint error.
