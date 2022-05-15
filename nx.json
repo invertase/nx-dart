@@ -11,7 +11,8 @@
       "dependencies": "*",
       "devDependencies": "*"
     },
-    ".eslintrc.json": "*"
+    ".eslintrc.json": "*",
+    ".github/workflows/ci.yaml": "*"
   },
   "tasksRunnerOptions": {
     "default": {
