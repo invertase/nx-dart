@@ -12,11 +12,7 @@ describe('preset generator', () => {
   });
 
   it('should setup workspace for @nx-dart', async () => {
-    await generator(
-      appTree,
-      { lints: LintRules.core },
-      { installDependencies: false }
-    );
+    await generator(appTree, { lints: LintRules.core });
     expectNxJsonHasPlugin(appTree);
   });
 });

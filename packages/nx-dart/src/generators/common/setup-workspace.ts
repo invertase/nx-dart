@@ -1,6 +1,7 @@
 import {
   addDependenciesToPackageJson,
   formatFiles,
+  Generator,
   removeDependenciesFromPackageJson,
   Tree,
 } from '@nrwl/devkit';
@@ -21,47 +22,46 @@ export enum LintRules {
 }
 
 export interface SetupWorkspaceOptions {
-  installDependencies?: boolean;
   overwrite?: boolean;
   lints: LintRules;
 }
 
-export async function setupWorkspaceForNxDart(
-  tree: Tree,
-  options: SetupWorkspaceOptions
-) {
+export const setupWorkspaceForNxDart: Generator<SetupWorkspaceOptions> = async (
+  tree,
+  options
+) => {
   const overwrite = options.overwrite ?? false;
-  const installDependencies = options.installDependencies ?? false;
 
-  await addDependenciesToWorkspace(tree, installDependencies);
+  const installDependencies = await addDependenciesToWorkspace(tree);
   addNxPlugin(tree, '@nx-dart/nx-dart');
   setDefaultCollection(tree, '@nx-dart/nx-dart', overwrite);
   addRuntimeCacheInput(tree, 'default', 'flutter --version || dart --version');
   await setupAnalysisOptions(tree, options.lints, overwrite);
   await formatFiles(tree);
-}
 
-async function addDependenciesToWorkspace(tree: Tree, install: boolean) {
+  return installDependencies;
+};
+
+async function addDependenciesToWorkspace(tree: Tree) {
   // When a workspace is created with a preset, that preset will be added to the dependencies
   // but we want to add the plugin to the devDependencies. So we remove it from the dependencies
   // first.
-  const uninstallCallback = removeDependenciesFromPackageJson(
+  const uninstall = removeDependenciesFromPackageJson(
     tree,
     ['@nx-dart/nx-dart'],
     []
   );
-  if (install && uninstallCallback) {
-    await uninstallCallback();
-  }
 
-  const installCallback = addDependenciesToPackageJson(
+  const install = addDependenciesToPackageJson(
     tree,
     {},
     { '@nx-dart/nx-dart': nxDartPackageJson().version }
   );
-  if (install && installCallback) {
-    await installCallback();
-  }
+
+  return async () => {
+    await uninstall?.call(null);
+    await install?.call(null);
+  };
 }
 
 async function setupAnalysisOptions(

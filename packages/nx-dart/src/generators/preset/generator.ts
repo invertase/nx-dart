@@ -1,15 +1,11 @@
-import { Tree } from '@nrwl/devkit';
+import { Generator } from '@nrwl/devkit';
 import { setupWorkspaceForNxDart } from '../common/setup-workspace';
 import { PresetGeneratorSchema } from './schema';
 
-export default async function (
-  tree: Tree,
-  options: PresetGeneratorSchema,
-  { installDependencies }: { installDependencies?: boolean } = {}
-) {
-  await setupWorkspaceForNxDart(tree, {
-    installDependencies: installDependencies ?? true,
+const presetGenerator: Generator<PresetGeneratorSchema> = (tree, options) =>
+  setupWorkspaceForNxDart(tree, {
     overwrite: true,
     lints: options.lints,
   });
-}
+
+export default presetGenerator;
