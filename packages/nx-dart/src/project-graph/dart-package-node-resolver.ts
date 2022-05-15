@@ -5,30 +5,18 @@ import {
   ProjectGraphProjectNode,
 } from '@nrwl/devkit';
 import * as crypto from 'crypto';
-import * as path from 'path';
+import { fsReadFile, ReadFile } from '../utils/fs';
 import * as pub from '../utils/pub';
-
-export enum PackageResolutionMode {
-  Declared,
-  Resolved,
-}
 
 export class DartPackageNodeResolver {
   constructor(
-    private mode: PackageResolutionMode,
-    private nodes: Record<string, ProjectGraphProjectNode<unknown>>
+    private readonly nodes: Record<string, ProjectGraphProjectNode<unknown>>,
+    private readonly readFile: ReadFile = fsReadFile
   ) {
     this.loadDartPackageProjects();
 
-    for (const pkg of Object.keys(this.packageToProject)) {
-      switch (this.mode) {
-        case PackageResolutionMode.Declared:
-          this.buildDeclaredDependencyNodes(pkg);
-          break;
-        case PackageResolutionMode.Resolved:
-          this.buildResolvedDependencyNodes(pkg);
-          break;
-      }
+    for (const packageName of Object.keys(this.packageToProject)) {
+      this.buildDependencyNodes(packageName);
     }
   }
 
@@ -87,7 +75,7 @@ export class DartPackageNodeResolver {
         (file: FileData) => file.file === pubspecPath
       );
       if (hasPubspec) {
-        const pubspec = pub.loadPubspec(node.data.root);
+        const pubspec = pub.loadPubspec(node.data.root, this.readFile);
         const packageName = pubspec.name;
         if (packageName) {
           this.packageToProject[packageName] = project;
@@ -100,7 +88,7 @@ export class DartPackageNodeResolver {
     }
   }
 
-  private buildDeclaredDependencyNodes(packageName: string) {
+  private buildDependencyNodes(packageName: string) {
     const pubspec = this.pubspecs[packageName];
     const dependencies = pubspec.dependencies ?? {};
     const devDependencies = pubspec.dev_dependencies ?? {};
@@ -121,59 +109,6 @@ export class DartPackageNodeResolver {
         const specJson = JSON.stringify(spec);
         this.addExternalDependency(packageName, dependency, specJson);
       }
-    }
-  }
-
-  private buildResolvedDependencyNodes(packageName: string) {
-    const pubspec = this.pubspecs[packageName];
-    const dependencies = pubspec.dependencies ?? {};
-    const devDependencies = pubspec.dev_dependencies ?? {};
-    const allDependencies = {
-      ...dependencies,
-      ...devDependencies,
-    };
-
-    const packageRoot = this.nodes[packageName].data.root;
-    const packageConfig = pub.loadPackageConfig(packageRoot);
-    if (!packageConfig) {
-      return;
-    }
-    const resolvedPackageUris = Object.fromEntries(
-      packageConfig.packages.map((pkg) => [pkg.name, pkg.rootUri])
-    );
-
-    for (const dependency of Object.keys(allDependencies)) {
-      const resolvedUri = resolvedPackageUris[dependency];
-      if (!resolvedUri) {
-        continue;
-      }
-
-      const isRelative = !resolvedUri.startsWith('file:');
-      if (isRelative) {
-        const uriInWorkspace = path.join(
-          packageRoot,
-          '.dart_tool',
-          resolvedUri
-        );
-
-        let foundProject = false;
-        for (const node of Object.values(this.nodes)) {
-          if (node.data.root === uriInWorkspace) {
-            // The dependency was resolved to a package in the workspace, so we use the
-            // corresponding project.
-            this.addProjectDependency(packageName, dependency, node.name);
-            foundProject = true;
-            continue;
-          }
-        }
-
-        if (foundProject) {
-          continue;
-        }
-      }
-
-      // For dependencies on external packages, we create an external node.
-      this.addExternalDependency(packageName, dependency, resolvedUri);
     }
   }
 
