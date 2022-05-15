@@ -1,4 +1,4 @@
-import { ProjectFileMap, ProjectGraph } from '@nrwl/devkit';
+import { normalizePath, ProjectFileMap, ProjectGraph } from '@nrwl/devkit';
 import * as pub from '../../utils/pub';
 import { DartPackageNodeResolver } from '../dart-package-node-resolver';
 import { ExplicityDependency } from './explicity-dependency';
@@ -14,7 +14,7 @@ export function buildExplicitPubspecDependencies(
     const root = graph.nodes[source].data.root;
 
     for (const file of files) {
-      if (file.file !== pub.pubspecPath(root)) {
+      if (file.file !== normalizePath(pub.pubspecPath(root))) {
         continue;
       }
 

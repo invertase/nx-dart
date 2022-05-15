@@ -1,5 +1,6 @@
 import {
   FileData,
+  normalizePath,
   ProjectGraphExternalNode,
   ProjectGraphProjectNode,
 } from '@nrwl/devkit';
@@ -81,7 +82,7 @@ export class DartPackageNodeResolver {
 
   private loadDartPackageProjects() {
     for (const [project, node] of Object.entries(this.nodes)) {
-      const pubspecPath = pub.pubspecPath(node.data.root);
+      const pubspecPath = normalizePath(pub.pubspecPath(node.data.root));
       const hasPubspec = node.data.files.some(
         (file: FileData) => file.file === pubspecPath
       );
