@@ -4,9 +4,10 @@ import {
   uniq,
   updateFile,
 } from '@nrwl/nx-plugin/testing';
+import * as path from 'path';
 import { addProjectToWorkspace, runNxCommandAsync } from './utils';
 
-describe('analyze executor', () => {
+describe('test executor', () => {
   beforeAll(() => ensureNxProject('@nx-dart/nx-dart', 'dist/packages/nx-dart'));
 
   afterAll(() => runNxCommandAsync('reset'));
@@ -56,7 +57,7 @@ void main() {
     let result = await runNxCommandAsync(`run ${project}:test`, {
       silenceError: true,
     });
-    expect(result.stdout).toContain('test/a_test.dart: a');
+    expect(result.stdout).toContain(`${path.normalize('test/a_test.dart')}: a`);
     expect(result.stdout).toContain('Some tests failed.');
 
     updateFile(
@@ -72,7 +73,7 @@ void main() {
 
     // Run tests without failure.
     result = await runNxCommandAsync(`run ${project}:test`);
-    expect(result.stdout).toContain('test/a_test.dart: a');
+    expect(result.stdout).toContain(`${path.normalize('test/a_test.dart')}: a`);
     expect(result.stdout).toContain('All tests passed!');
   }, 120000);
 
