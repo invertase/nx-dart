@@ -7,6 +7,11 @@
       "factory": "./src/generators/preset/generator",
       "schema": "./src/generators/preset/schema.json",
       "description": "Creates an empty workspace for developing Dart and Flutter packages."
+    },
+    "add-package": {
+      "factory": "./src/generators/add-package/generator",
+      "schema": "./src/generators/add-package/schema.json",
+      "description": "Adds an existing Dart package to the workspace."
     }
   }
 }
