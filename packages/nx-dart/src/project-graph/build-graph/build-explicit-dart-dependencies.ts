@@ -3,7 +3,7 @@ import {
   importsForFile,
   isDartFile,
   packageNameFromUri,
-} from '../../utils/dart-code';
+} from '../../utils/dart-source';
 import { DartPackageNodeResolver } from '../dart-package-node-resolver';
 import { ExplicityDependency } from './explicity-dependency';
 

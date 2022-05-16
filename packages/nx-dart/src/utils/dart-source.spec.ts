@@ -1,6 +1,6 @@
-import { packageNameFromUri } from './dart-code';
+import { packageNameFromUri } from './dart-source';
 
-describe('Dart code', () => {
+describe('dart source', () => {
   it('packageNameFromUri returns package name', () => {
     expect(packageNameFromUri('dart:a')).toBeUndefined();
     expect(packageNameFromUri('a.dart')).toBeUndefined();

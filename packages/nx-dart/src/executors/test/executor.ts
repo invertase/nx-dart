@@ -1,8 +1,8 @@
 import { ExecutorContext } from '@nrwl/devkit';
 import * as path from 'path';
-import { removeDirectory } from '../../utils/fs';
+import { removeFile } from '../../utils/fs';
 import { isFlutterPackage, loadPubspec } from '../../utils/pub';
-import { executeCommand } from '../utils/execute-command';
+import { executeCommand } from '../../utils/execute-command';
 import { TestExecutorSchema } from './schema';
 
 const coverageDir = 'coverage';
@@ -22,7 +22,7 @@ export default async function runExecutor(
   const args = buildTestArguments(tool, options);
 
   if (options.coverage) {
-    removeDirectory(path.join(projectRoot, coverageDir));
+    removeFile(path.join(projectRoot, coverageDir));
   }
 
   let success = executeCommand({
@@ -114,7 +114,7 @@ function convertCoverageDataToLcov(projectRoot: string) {
     return false;
   }
 
-  removeDirectory(path.join(projectRoot, coverageDartDataDir));
+  removeFile(path.join(projectRoot, coverageDartDataDir));
 
   return true;
 }

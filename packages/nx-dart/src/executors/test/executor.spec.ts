@@ -1,7 +1,7 @@
 import { ExecutorContext } from '@nrwl/devkit';
 import * as path from 'path';
 import { readFile } from '../../utils/fs';
-import { executeCommand } from '../utils/execute-command';
+import { executeCommand } from '../../utils/execute-command';
 import executor from './executor';
 import { TestExecutorSchema } from './schema';
 
