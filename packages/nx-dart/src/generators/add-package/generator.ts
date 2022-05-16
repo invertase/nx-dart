@@ -124,34 +124,35 @@ function migrateToWorkspaceAnalysisOptions(
   packageRoot: string,
   workspaceAnalysisOptions: AnalysisOptions
 ): GeneratorCallback | undefined {
+  const workspaceIncludePackage = packageNameFromUri(
+    workspaceAnalysisOptions.include ?? ''
+  );
+  let includePackage: string | undefined;
+
   const analysisOptions = readAnalysisOptions(tree, packageRoot);
   if (analysisOptions !== undefined) {
     tree.delete(`${packageRoot}/analysis_options.yaml`);
+    includePackage = packageNameFromUri(analysisOptions.include ?? '');
+  }
 
-    const workspaceIncludePackage = packageNameFromUri(
-      workspaceAnalysisOptions.include ?? ''
-    );
-    const includePackage = packageNameFromUri(analysisOptions.include ?? '');
-
-    if (workspaceIncludePackage !== includePackage) {
-      return () => {
-        if (includePackage) {
-          executeCommand({
-            executable: 'dart',
-            arguments: ['pub', 'remove', includePackage],
-            cwd: path.join(workspaceRoot, packageRoot),
-            expectedErrorExitCodes: [],
-          });
-        }
-        if (workspaceIncludePackage) {
-          executeCommand({
-            executable: 'dart',
-            arguments: ['pub', 'add', workspaceIncludePackage],
-            cwd: path.join(workspaceRoot, packageRoot),
-            expectedErrorExitCodes: [],
-          });
-        }
-      };
-    }
+  if (workspaceIncludePackage !== includePackage) {
+    return () => {
+      if (includePackage) {
+        executeCommand({
+          executable: 'dart',
+          arguments: ['pub', 'remove', includePackage],
+          cwd: path.join(workspaceRoot, packageRoot),
+          expectedErrorExitCodes: [],
+        });
+      }
+      if (workspaceIncludePackage) {
+        executeCommand({
+          executable: 'dart',
+          arguments: ['pub', 'add', workspaceIncludePackage],
+          cwd: path.join(workspaceRoot, packageRoot),
+          expectedErrorExitCodes: [],
+        });
+      }
+    };
   }
 }
