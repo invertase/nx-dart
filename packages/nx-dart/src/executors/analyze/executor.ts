@@ -19,7 +19,7 @@ export default async function runExecutor(
 }
 
 function buildAnalyzeArguments(options: AnalyzeExecutorSchema) {
-  const command = ['dart', 'analyze'];
+  const command = ['analyze'];
 
   if (options.fatalInfos) {
     command.push('--fatal-infos');

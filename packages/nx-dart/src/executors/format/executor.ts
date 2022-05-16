@@ -53,7 +53,7 @@ function format(projectRoot: string, files: string[], check: boolean): boolean {
 }
 
 function buildFormatArguments(check: boolean, files: string[]) {
-  const command = ['dart', 'format', '--show', 'all'];
+  const command = ['format', '--show', 'all'];
 
   if (check) {
     command.push('--set-exit-if-changed', '--output', 'none');
