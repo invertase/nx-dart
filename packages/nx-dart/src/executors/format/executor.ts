@@ -4,9 +4,9 @@ import {
   ProjectGraph,
   ProjectGraphProjectNode,
 } from '@nrwl/devkit';
-import { execSync } from 'child_process';
 import * as path from 'path';
 import { isDartFile } from '../../utils/dart-code';
+import { executeCommand } from '../utils/execute-command';
 import { FormatExecutorSchema } from './schema';
 
 export default async function runExecutor(
@@ -40,35 +40,27 @@ function filesToFormat(
 }
 
 function format(projectRoot: string, files: string[], check: boolean): boolean {
-  const command = buildFormatCommand(
+  const args = buildFormatArguments(
     check,
     files.map((filePath) => path.relative(projectRoot, filePath))
   );
 
-  try {
-    execSync(command, {
-      stdio: 'inherit',
-      cwd: projectRoot,
-    });
-
-    return true;
-  } catch (e) {
-    if (e.status !== 1) {
-      throw e;
-    }
-    return false;
-  }
+  return executeCommand({
+    executable: 'dart',
+    arguments: args,
+    cwd: projectRoot,
+  });
 }
 
-function buildFormatCommand(check: boolean, files: string[]) {
+function buildFormatArguments(check: boolean, files: string[]) {
   const command = ['dart', 'format', '--show', 'all'];
 
   if (check) {
     command.push('--set-exit-if-changed', '--output', 'none');
   }
 
-  command.push(...files.map((file) => `"${file}"`));
-  return command.join(' ');
+  command.push(...files);
+  return command;
 }
 
 function chunkify(target: string[], size: number): string[][] {

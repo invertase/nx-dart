@@ -25,7 +25,7 @@ describe('analyze executor', () => {
       `
 name: ${project}
 environment:
-  sdk: '>=2.17.0.0 <3.0.0'
+  sdk: '>=2.17.0 <3.0.0'
 `
     );
     // analysis_options.yaml
@@ -45,7 +45,7 @@ linter:
     await expect(
       runNxCommandAsync(`run ${project}:analyze`)
     ).rejects.toThrowError();
-    let result = await runNxCommandAsync(`run ${project}:analyze --verbose`, {
+    let result = await runNxCommandAsync(`run ${project}:analyze`, {
       silenceError: true,
     });
     expect(result.stdout).toContain(`Analyzing ${project}`);

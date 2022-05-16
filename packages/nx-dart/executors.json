@@ -10,6 +10,11 @@
       "implementation": "./src/executors/analyze/executor",
       "schema": "./src/executors/analyze/schema.json",
       "description": "Analyzes a Dart package."
+    },
+    "test": {
+      "implementation": "./src/executors/test/executor",
+      "schema": "./src/executors/test/schema.json",
+      "description": "Runs Dart or Flutter tests."
     }
   }
 }
