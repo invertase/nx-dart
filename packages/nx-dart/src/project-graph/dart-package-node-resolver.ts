@@ -5,13 +5,11 @@ import {
   ProjectGraphProjectNode,
 } from '@nrwl/devkit';
 import * as crypto from 'crypto';
-import { fsReadFile, ReadFile } from '../utils/fs';
 import * as pub from '../utils/pub';
 
 export class DartPackageNodeResolver {
   constructor(
-    private readonly nodes: Record<string, ProjectGraphProjectNode<unknown>>,
-    private readonly readFile: ReadFile = fsReadFile
+    private readonly nodes: Record<string, ProjectGraphProjectNode<unknown>>
   ) {
     this.loadDartPackageProjects();
 
@@ -75,7 +73,7 @@ export class DartPackageNodeResolver {
         (file: FileData) => file.file === pubspecPath
       );
       if (hasPubspec) {
-        const pubspec = pub.loadPubspec(node.data.root, this.readFile);
+        const pubspec = pub.loadPubspec(node.data.root);
         const packageName = pubspec.name;
         if (packageName) {
           this.packageToProject[packageName] = project;

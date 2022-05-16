@@ -1,5 +1,5 @@
 import { ExecutorContext } from '@nrwl/devkit';
-import { execSync } from 'child_process';
+import { executeCommand } from '../utils/execute-command';
 import { AnalyzeExecutorSchema } from './schema';
 
 export default async function runExecutor(
@@ -7,29 +7,19 @@ export default async function runExecutor(
   context: ExecutorContext
 ) {
   const projectRoot = context.workspace.projects[context.projectName].root;
-  const command = buildAnalyzeCommand(options);
+  const args = buildAnalyzeArguments(options);
 
-  try {
-    execSync(command, {
-      stdio: 'inherit',
+  return {
+    success: executeCommand({
+      executable: 'dart',
+      arguments: args,
       cwd: projectRoot,
-    });
-
-    return {
-      success: true,
-    };
-  } catch (e) {
-    if (e.status !== 1) {
-      throw e;
-    }
-    return {
-      success: false,
-    };
-  }
+    }),
+  };
 }
 
-function buildAnalyzeCommand(options: AnalyzeExecutorSchema) {
-  const command = ['dart', 'analyze'];
+function buildAnalyzeArguments(options: AnalyzeExecutorSchema) {
+  const command = ['analyze'];
 
   if (options.fatalInfos) {
     command.push('--fatal-infos');
@@ -39,5 +29,5 @@ function buildAnalyzeCommand(options: AnalyzeExecutorSchema) {
     command.push('--no-fatal-warnings');
   }
 
-  return command.join(' ');
+  return command;
 }
