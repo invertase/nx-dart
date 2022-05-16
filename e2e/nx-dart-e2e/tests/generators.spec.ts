@@ -11,6 +11,7 @@ import {
 } from '@nrwl/nx-plugin/testing';
 import * as path from 'path';
 import { runNxCommandAsync } from './utils';
+
 describe('preset generator', () => {
   beforeAll(() => ensureNxProject('@nx-dart/nx-dart', 'dist/packages/nx-dart'));
 
@@ -42,7 +43,7 @@ environment:
         `g @nx-dart/nx-dart:add-package libs/${project} --project-type library`
       );
       checkFilesExist(`libs/${project}/project.json`);
-    });
+    }, 12000);
 
     it('should migrate analysis_options.yaml', async () => {
       const project = uniq('add_package_');
@@ -76,6 +77,6 @@ dev_dependencies:
       const pubspecYaml = readFile(`${projectRoot}/pubspec.yaml`);
       expect(pubspecYaml).not.toContain('lint: any');
       expect(pubspecYaml).toContain('flutter_lints');
-    });
+    }, 12000);
   });
 });
