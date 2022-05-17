@@ -1,5 +1,5 @@
 import { getPackageManagerCommand } from '@nrwl/devkit';
-import { tmpProjPath, updateFile } from '@nrwl/nx-plugin/testing';
+import { readFile, tmpProjPath, updateFile } from '@nrwl/nx-plugin/testing';
 import { exec } from 'child_process';
 import * as YAML from 'yaml';
 
@@ -81,19 +81,29 @@ export function addProjectToWorkspace(
   return projectPath;
 }
 
-export function addPackageDependency(
+export function writePubspec(
   packageRoot: string,
-  name: string,
-  spec: unknown
+  content: Record<string, unknown>
 ) {
-  updateFile(`${packageRoot}/pubspec.yaml`, (content) => {
-    const yaml = YAML.parse(content);
+  updateFile(
+    `${packageRoot}/pubspec.yaml`,
+    YAML.stringify({
+      environment: {
+        sdk: '>=2.17.0 <3.0.0',
+      },
+      ...content,
+    })
+  );
+}
 
-    const dependencies = (yaml['dependencies'] = yaml['dependencies'] ?? {});
-    dependencies[name] = spec;
+export function writeAnalysisOptions(
+  packageRoot: string,
+  content: Record<string, unknown>
+) {
+  updateFile(`${packageRoot}/analysis_options.yaml`, YAML.stringify(content));
+}
 
-    return YAML.stringify(yaml, {
-      indent: 2,
-    });
-  });
+export function readPubspec(packageRoot: string) {
+  const content = readFile(`${packageRoot}/pubspec.yaml`);
+  return content ? YAML.parse(content) : undefined;
 }

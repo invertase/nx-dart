@@ -5,8 +5,8 @@ import {
   ProjectGraphProjectNode,
 } from '@nrwl/devkit';
 import * as path from 'path';
-import { isDartFile } from '../../utils/dart-code';
-import { executeCommand } from '../utils/execute-command';
+import { isDartFile } from '../../utils/dart-source';
+import { executeCommand } from '../../utils/execute-command';
 import { FormatExecutorSchema } from './schema';
 
 export default async function runExecutor(

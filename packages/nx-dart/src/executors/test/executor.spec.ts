@@ -1,11 +1,11 @@
 import { ExecutorContext } from '@nrwl/devkit';
 import * as path from 'path';
+import { executeCommand } from '../../utils/execute-command';
 import { readFile } from '../../utils/fs';
-import { executeCommand } from '../utils/execute-command';
 import executor from './executor';
 import { TestExecutorSchema } from './schema';
 
-jest.mock('../utils/execute-command');
+jest.mock('../../utils/execute-command');
 jest.mock('../../utils/fs');
 
 const options: TestExecutorSchema = {};

@@ -1,5 +1,5 @@
 import { ExecutorContext } from '@nrwl/devkit';
-import { executeCommand } from '../utils/execute-command';
+import { executeCommand } from '../../utils/execute-command';
 import { AnalyzeExecutorSchema } from './schema';
 
 export default async function runExecutor(

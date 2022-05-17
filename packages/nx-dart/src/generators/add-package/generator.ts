@@ -9,9 +9,9 @@ import {
   Tree,
   workspaceRoot,
 } from '@nrwl/devkit';
-import { executeCommand } from '../../executors/utils/execute-command';
+import { executeCommand } from '../../utils/execute-command';
 import { AnalysisOptions } from '../../utils/analyzer';
-import { packageNameFromUri } from '../../utils/dart-code';
+import { packageNameFromUri } from '../../utils/dart-source';
 import { pubspecPath } from '../../utils/pub';
 import { readAnalysisOptions } from '../utils/analyzer';
 import { readPubspec } from '../utils/pub';
@@ -148,7 +148,7 @@ function migrateToWorkspaceAnalysisOptions(
       if (workspaceIncludePackage) {
         executeCommand({
           executable: 'dart',
-          arguments: ['pub', 'add', workspaceIncludePackage],
+          arguments: ['pub', 'add', '--dev', workspaceIncludePackage],
           cwd: path.join(workspaceRoot, packageRoot),
           expectedErrorExitCodes: [],
         });
