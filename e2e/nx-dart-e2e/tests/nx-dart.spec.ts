@@ -302,6 +302,6 @@ void main() {
       pubspec = readPubspec('.');
       expect(pubspec.dev_dependencies?.lints).toBeUndefined();
       expect(pubspec.dev_dependencies?.flutter_lints).toBeDefined();
-    }, 12000);
+    }, 24000);
   });
 });
