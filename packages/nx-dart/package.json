@@ -1,6 +1,15 @@
 {
   "name": "@nx-dart/nx-dart",
   "version": "0.0.1",
+  "description": "Plugin to add support for Dart and Flutter to Nx workspaces.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blaugold/nx-dart"
+  },
+  "homepage": "https://github.com/blaugold/nx-dart/tree/main/packages/nx-dart",
+  "bugs": {
+    "url": "https://github.com/blaugold/nx-dart/issues"
+  },
   "main": "src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
