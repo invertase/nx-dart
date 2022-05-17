@@ -5,7 +5,7 @@ import {
   ProjectGraphProjectNode,
 } from '@nrwl/devkit';
 import * as crypto from 'crypto';
-import * as pub from '../utils/pub';
+import * as pkg from '../utils/package';
 
 export class DartPackageNodeResolver {
   constructor(
@@ -32,7 +32,7 @@ export class DartPackageNodeResolver {
    * For ech package, its parsed pubspec.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private pubspecs: Record<string, pub.Pubspec> = {};
+  private pubspecs: Record<string, pkg.Pubspec> = {};
 
   /**
    * For each package, a map from packages they depend on, to the name of the corresponding graph
@@ -68,12 +68,12 @@ export class DartPackageNodeResolver {
 
   private loadDartPackageProjects() {
     for (const [project, node] of Object.entries(this.nodes)) {
-      const pubspecPath = normalizePath(pub.pubspecPath(node.data.root));
+      const pubspecPath = normalizePath(pkg.pubspecPath(node.data.root));
       const hasPubspec = node.data.files.some(
         (file: FileData) => file.file === pubspecPath
       );
       if (hasPubspec) {
-        const pubspec = pub.loadPubspec(node.data.root);
+        const pubspec = pkg.loadPubspec(node.data.root);
         const packageName = pubspec.name;
         if (packageName) {
           this.packageToProject[packageName] = project;

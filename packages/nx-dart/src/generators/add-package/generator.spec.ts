@@ -13,7 +13,6 @@ describe('add-package generator', () => {
     appTree.write('test/pubspec.yaml', 'name: test');
     await generator(appTree, {
       directory: 'test',
-      projectType: 'application',
     });
     const config = readProjectConfiguration(appTree, 'test');
     expect(config).toBeDefined();
@@ -24,7 +23,6 @@ describe('add-package generator', () => {
     appTree.write('test/pubspec.yaml', 'name: test');
     await generator(appTree, {
       directory: 'test',
-      projectType: 'application',
     });
     const config = readProjectConfiguration(appTree, 'test');
     expect(config.targets.format).toEqual({
@@ -37,7 +35,6 @@ describe('add-package generator', () => {
     appTree.write('test/pubspec.yaml', 'name: test');
     await generator(appTree, {
       directory: 'test',
-      projectType: 'application',
     });
     const config = readProjectConfiguration(appTree, 'test');
     expect(config.targets.analyze).toEqual({
@@ -51,7 +48,6 @@ describe('add-package generator', () => {
     appTree.write('test/test/a_test.dart', '');
     await generator(appTree, {
       directory: 'test',
-      projectType: 'application',
     });
     const config = readProjectConfiguration(appTree, 'test');
     expect(config.targets.test).toEqual({
@@ -65,7 +61,6 @@ describe('add-package generator', () => {
     appTree.write('test/integration_test/a_test.dart', '');
     await generator(appTree, {
       directory: 'test',
-      projectType: 'application',
     });
     const config = readProjectConfiguration(appTree, 'test');
     expect(config.targets.e2e).toEqual({
@@ -83,8 +78,20 @@ describe('add-package generator', () => {
     appTree.write('test/analysis_options.yaml', '');
     await generator(appTree, {
       directory: 'test',
-      projectType: 'application',
     });
     expect(appTree.exists('test/analysis_options.yaml')).toBe(false);
+  });
+
+  it('should add project for example package', async () => {
+    appTree.write('test/pubspec.yaml', 'name: test');
+    appTree.write('test/example/pubspec.yaml', 'name: test_example');
+    await generator(appTree, {
+      directory: 'test',
+    });
+    const config = readProjectConfiguration(appTree, 'test');
+    expect(config.projectType).toBe('library');
+    const exampleConfig = readProjectConfiguration(appTree, 'test_example');
+    expect(exampleConfig).toBeDefined();
+    expect(exampleConfig.projectType).toBe('application');
   });
 });

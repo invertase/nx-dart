@@ -1,8 +1,8 @@
 import { ExecutorContext } from '@nrwl/devkit';
 import * as path from 'path';
-import { removeFile } from '../../utils/fs';
-import { isFlutterPackage, loadPubspec } from '../../utils/pub';
 import { executeCommand } from '../../utils/execute-command';
+import { removeFile } from '../../utils/fs';
+import { isFlutterPackage, loadPubspec } from '../../utils/package';
 import { TestExecutorSchema } from './schema';
 
 const coverageDir = 'coverage';

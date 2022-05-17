@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { isFlutterPackage, Pubspec, pubspecPath } from './pub';
+import { isFlutterPackage, Pubspec, pubspecPath } from './package';
 
 describe('pub utils', () => {
   it('pubspecPath returns correct path', () => {
