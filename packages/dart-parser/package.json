@@ -2,5 +2,11 @@
   "name": "@nx-dart/dart-parser",
   "version": "0.0.1",
   "main": "./dist/index.js",
-  "typings": "./lib/index.d.ts"
+  "typings": "./lib/index.d.ts",
+  "scripts": {
+    "prepublishOnly": "nx build dart-parser"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

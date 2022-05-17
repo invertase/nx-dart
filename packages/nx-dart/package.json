@@ -7,5 +7,12 @@
   "dependencies": {
     "tslib": "^2.3.0",
     "@nx-dart/dart-parser": "^0.0.1"
+  },
+  "scripts": {
+    "prepublishOnly": "cd ../../ && nx build nx-dart"
+  },
+  "publishConfig": {
+    "access": "public",
+    "directory": "../../dist/packages/nx-dart"
   }
 }
