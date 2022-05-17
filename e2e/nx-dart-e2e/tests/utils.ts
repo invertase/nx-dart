@@ -107,3 +107,8 @@ export function readPubspec(packageRoot: string) {
   const content = readFile(`${packageRoot}/pubspec.yaml`);
   return content ? YAML.parse(content) : undefined;
 }
+
+export function readAnalysisOptions(packageRoot: string) {
+  const content = readFile(`${packageRoot}/analysis_options.yaml`);
+  return content ? YAML.parse(content) : undefined;
+}

@@ -2,8 +2,11 @@ import { GeneratorCallback, Tree } from '@nrwl/devkit';
 import fetch from 'node-fetch';
 import * as YAML from 'yaml';
 import { packageNameFromUri } from '../../utils/dart-source';
-import { addHostedDependencyToPackage } from '../../utils/package';
-import { readPubspec } from '../utils/package';
+import {
+  addHostedDependencyToPackage,
+  removeDependencyFromPackage,
+} from '../../utils/package';
+import { runAllTasks } from '../utils/generator';
 
 const workspaceAnalysisOptions = `
 analyzer:
@@ -58,6 +61,7 @@ export async function updateWorkspaceAnalysisOptions(
   }
 
   // Include analysis options from package or inline lint rules.
+  const currentInclude = contents.get('include') as string | undefined;
   let include: string | undefined;
   let lintRules: string[];
   switch (lints) {
@@ -103,20 +107,27 @@ export async function updateWorkspaceAnalysisOptions(
 
   tree.write('analysis_options.yaml', doc.toString());
 
-  // Add included package to pubspec.yaml if necessary.
-  if (include) {
-    const includedPackage = packageNameFromUri(include);
-    const pubspec = readPubspec(tree, '.');
-    if (
-      !pubspec.dependencies?.[includedPackage] &&
-      !pubspec.dev_dependencies?.[includedPackage]
-    ) {
-      return () =>
-        addHostedDependencyToPackage('.', includedPackage, {
-          dev: true,
-        });
+  // Change included package in pubspec.yaml if necessary.
+  const tasks: GeneratorCallback[] = [];
+  const includedPackage = include ? packageNameFromUri(include) : undefined;
+  const currentIncludedPackage = currentInclude
+    ? packageNameFromUri(currentInclude)
+    : undefined;
+  if (currentIncludedPackage !== includedPackage) {
+    if (currentIncludedPackage) {
+      tasks.push(() =>
+        removeDependencyFromPackage('.', currentIncludedPackage)
+      );
+    }
+
+    if (includedPackage) {
+      tasks.push(() =>
+        addHostedDependencyToPackage('.', includedPackage, { dev: true })
+      );
     }
   }
+
+  return runAllTasks(tasks);
 }
 
 async function downloadAllLintRules(): Promise<string[]> {

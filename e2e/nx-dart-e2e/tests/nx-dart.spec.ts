@@ -12,6 +12,7 @@ import * as path from 'path';
 import {
   addPluginToNxJson,
   addProjectToWorkspace,
+  readAnalysisOptions,
   readPubspec,
   runNxCommandAsync,
   writeAnalysisOptions,
@@ -281,5 +282,26 @@ void main() {
       const pubspec = readPubspec(projectRoot);
       expect(pubspec.dev_dependencies?.lints).toBeUndefined();
     }, 12000);
+  });
+
+  describe('change-lints', () => {
+    it('should change lint rules in analysis_options.yaml', async () => {
+      await runNxCommandAsync(`g @nx-dart/nx-dart:change-lints core`);
+
+      let analysisOptions = readAnalysisOptions('.');
+      expect(analysisOptions.include).toContain('package:lints/core.yaml');
+      let pubspec = readPubspec('.');
+      expect(pubspec.dev_dependencies?.lints).toBeDefined();
+
+      await runNxCommandAsync(`g @nx-dart/nx-dart:change-lints flutter`);
+
+      analysisOptions = readAnalysisOptions('.');
+      expect(analysisOptions.include).toContain(
+        'package:flutter_lints/flutter.yaml'
+      );
+      pubspec = readPubspec('.');
+      expect(pubspec.dev_dependencies?.lints).toBeUndefined();
+      expect(pubspec.dev_dependencies?.flutter_lints).toBeDefined();
+    }, 24000);
   });
 });

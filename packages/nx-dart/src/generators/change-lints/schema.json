@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "$id": "ChangeLints",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "lints": {
+      "type": "string",
+      "description": "The set of lint rules to apply to the workspace.",
+      "enum": ["core", "recommended", "flutter", "all"],
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": {
+        "message": "Which set of lint rules would you like to use?",
+        "type": "list",
+        "items": [
+          {
+            "label": "Core rules from the lints package.",
+            "value": "core"
+          },
+          {
+            "label": "Recommended rules from the lints package.",
+            "value": "recommended"
+          },
+          {
+            "label": "Rules from the flutter_lints package.",
+            "value": "flutter"
+          },
+          {
+            "label": "All available lint rules. Requires resolving conflicting rules.",
+            "value": "all"
+          }
+        ]
+      }
+    }
+  },
+  "required": ["lints"]
+}
