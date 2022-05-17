@@ -12,6 +12,11 @@
       "factory": "./src/generators/add-package/generator",
       "schema": "./src/generators/add-package/schema.json",
       "description": "Adds an existing Dart package to the workspace."
+    },
+    "change-lints": {
+      "factory": "./src/generators/change-lints/generator",
+      "schema": "./src/generators/change-lints/schema.json",
+      "description": "Changes the lint rules in the workspace analysis options."
     }
   }
 }
