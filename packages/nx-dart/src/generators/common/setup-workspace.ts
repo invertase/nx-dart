@@ -7,12 +7,7 @@ import {
 } from '@nrwl/devkit';
 import fetch from 'node-fetch';
 import { nxDartPackageJson } from '../../utils/misc';
-import {
-  addFileToImplicitDependencies,
-  addNxPlugin,
-  addRuntimeCacheInput,
-  setDefaultCollection,
-} from '../utils/nx-workspace';
+import { updateNxJson } from '../utils/nx-workspace';
 
 export enum LintRules {
   core = 'core',
@@ -33,9 +28,7 @@ export const setupWorkspaceForNxDart: Generator<SetupWorkspaceOptions> = async (
   const overwrite = options.overwrite ?? false;
 
   const installDependencies = await addDependenciesToWorkspace(tree);
-  addNxPlugin(tree, '@nx-dart/nx-dart');
-  setDefaultCollection(tree, '@nx-dart/nx-dart', overwrite);
-  addRuntimeCacheInput(tree, 'default', 'flutter --version || dart --version');
+  setupNxJson(tree, overwrite);
   await setupAnalysisOptions(tree, options.lints, overwrite);
   await formatFiles(tree);
 
@@ -64,6 +57,49 @@ async function addDependenciesToWorkspace(tree: Tree) {
   };
 }
 
+function setupNxJson(tree: Tree, overwrite: boolean) {
+  updateNxJson(tree, (nxJson) => {
+    // Add this plugin to plugins.
+    const plugins = (nxJson.plugins = nxJson.plugins ?? []);
+    if (!plugins.includes('@nx-dart/nx-dart')) {
+      plugins.push('@nx-dart/nx-dart');
+    }
+
+    // Make this plugin the default collection.
+    const defaultCollection = nxJson.cli?.defaultCollection;
+    if (!defaultCollection || overwrite) {
+      nxJson.cli = {
+        ...nxJson.cli,
+        defaultCollection: '@nx-dart/nx-dart',
+      };
+    }
+
+    const tasksRunnerOptions = nxJson.tasksRunnerOptions ?? {};
+    const taskRunner = tasksRunnerOptions.default;
+    const taskRunnerOptions = (taskRunner.options = taskRunner.options ?? {});
+
+    // Add a runtime cache input for Dart / Flutter SDK.
+    const runtimeCacheInputs = (taskRunnerOptions.runtimeCacheInputs =
+      taskRunnerOptions.runtimeCacheInputs ?? []);
+    const input = 'flutter --version || dart --version';
+    if (!runtimeCacheInputs.includes(input)) {
+      runtimeCacheInputs.push(input);
+    }
+
+    // Add Dart / Flutter related cacheable operations.
+    const cacheableOperations = (taskRunnerOptions.cacheableOperations =
+      taskRunnerOptions.cacheableOperations ?? []);
+    const operations = ['format', 'analyze'];
+    for (const operation of operations) {
+      if (!cacheableOperations.includes(operation)) {
+        cacheableOperations.push(operation);
+      }
+    }
+
+    return nxJson;
+  });
+}
+
 async function setupAnalysisOptions(
   tree: Tree,
   lints: LintRules,
@@ -72,7 +108,18 @@ async function setupAnalysisOptions(
   if (!tree.exists('analysis_options.yaml') || overwrite) {
     tree.write('analysis_options.yaml', await buildAnalysisOptionsYaml(lints));
   }
-  addFileToImplicitDependencies(tree, 'analysis_options.yaml', overwrite);
+
+  // Add 'analysis_options.yaml' as an implicit dependency for all projects.
+  updateNxJson(tree, (nxJson) => {
+    const implicitDependencies = (nxJson.implicitDependencies =
+      nxJson.implicitDependencies ?? {});
+
+    if (!('analysis_options.yaml' in implicitDependencies) || overwrite) {
+      implicitDependencies['analysis_options.yaml'] = '*';
+    }
+
+    return nxJson;
+  });
 }
 
 async function buildAnalysisOptionsYaml(lints: LintRules) {

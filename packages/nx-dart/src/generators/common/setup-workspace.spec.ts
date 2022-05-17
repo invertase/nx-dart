@@ -39,6 +39,15 @@ describe('setup workspace', () => {
     ).toContain('flutter --version || dart --version');
   });
 
+  it('should add analyze and format as cacheable operations', async () => {
+    await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
+    const nxJson = readJson(appTree, 'nx.json');
+    const cacheableOperations =
+      nxJson.tasksRunnerOptions.default.options.cacheableOperations;
+    expect(cacheableOperations).toContain('format');
+    expect(cacheableOperations).toContain('analyze');
+  });
+
   describe('lints', () => {
     it('it should make analysis_options.yaml a universal implicit dependency', async () => {
       await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });

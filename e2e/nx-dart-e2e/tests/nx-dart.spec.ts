@@ -167,14 +167,14 @@ describe('nx-dart', () => {
       updateFile(
         dartFile,
         `
-  import 'package:test/test.dart';
+import 'package:test/test.dart';
 
-  void main() {
-    test('a', () {
-      fail('');
-    });
-  }
-  `
+void main() {
+  test('a', () {
+    fail('');
+  });
+}
+`
       );
 
       // Run tests with failure.
@@ -192,12 +192,12 @@ describe('nx-dart', () => {
       updateFile(
         dartFile,
         `
-  import 'package:test/test.dart';
+import 'package:test/test.dart';
 
-  void main() {
-    test('a', () {});
-  }
-  `
+void main() {
+  test('a', () {});
+}
+`
       );
 
       // Run tests without failure.
@@ -232,12 +232,12 @@ describe('nx-dart', () => {
       updateFile(
         dartFile,
         `
-  import 'package:test/test.dart';
+import 'package:test/test.dart';
 
-  void main() {
-    test('a', () {});
-  }
-  `
+void main() {
+  test('a', () {});
+}
+`
       );
 
       // Run tests with coverage.
@@ -253,13 +253,11 @@ describe('nx-dart', () => {
       writePubspec(projectRoot, {
         name: project,
       });
-      await runNxCommandAsync(
-        `g @nx-dart/nx-dart:add-package ${projectRoot} --project-type library`
-      );
+      await runNxCommandAsync(`g @nx-dart/nx-dart:add-package ${projectRoot}`);
       checkFilesExist(`${projectRoot}/project.json`);
     }, 12000);
 
-    it('should migrate analysis_options.yaml', async () => {
+    it('should migrate to workspace wide analysis_options.yaml', async () => {
       const project = uniq('add_package_');
       const projectRoot = `libs/${project}`;
       writeAnalysisOptions('.', {
@@ -274,9 +272,7 @@ describe('nx-dart', () => {
           lint: 'any',
         },
       });
-      await runNxCommandAsync(
-        `g @nx-dart/nx-dart:add-package ${projectRoot} --project-type library`
-      );
+      await runNxCommandAsync(`g @nx-dart/nx-dart:add-package ${projectRoot}`);
       expect(
         fileExists(
           path.join(workspaceRoot, projectRoot, 'analysis_options.yaml')

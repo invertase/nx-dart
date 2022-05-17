@@ -9,24 +9,32 @@ import {
   Tree,
   workspaceRoot,
 } from '@nrwl/devkit';
-import { executeCommand } from '../../utils/execute-command';
-import { AnalysisOptions } from '../../utils/analyzer';
 import { packageNameFromUri } from '../../utils/dart-source';
-import { pubspecPath } from '../../utils/pub';
-import { readAnalysisOptions } from '../utils/analyzer';
-import { readPubspec } from '../utils/pub';
+import { executeCommand } from '../../utils/execute-command';
+import { AnalysisOptions, pubspecPath } from '../../utils/package';
+import {
+  inferPackageProjectType,
+  readAnalysisOptions,
+  readPubspec,
+} from '../utils/package';
 import { AddPackageGeneratorSchema } from './schema';
 import path = require('path');
+
+interface NormalizedOptions extends AddPackageGeneratorSchema {
+  projectType: ProjectType;
+}
 
 function normalizeOptions(
   tree: Tree,
   options: AddPackageGeneratorSchema
-): AddPackageGeneratorSchema {
+): NormalizedOptions {
   const directory = normalizePath(options.directory);
+  const projectType =
+    options.projectType ?? inferPackageProjectType(tree, directory);
 
   return {
     directory,
-    projectType: options.projectType,
+    projectType,
   };
 }
 
@@ -35,17 +43,40 @@ export default async function (tree: Tree, options: AddPackageGeneratorSchema) {
   const existingProjects = Object.keys(getProjects(tree));
   const workspaceAnalysisOptions = readAnalysisOptions(tree, '.');
 
-  const task = addPackageProject(
-    tree,
-    existingProjects,
-    workspaceAnalysisOptions,
-    normalizedOptions.directory,
-    normalizedOptions.projectType
+  const tasks: (GeneratorCallback | undefined)[] = [];
+
+  tasks.push(
+    addPackageProject(
+      tree,
+      existingProjects,
+      workspaceAnalysisOptions,
+      normalizedOptions.directory,
+      normalizedOptions.projectType
+    )
   );
+
+  const exampleDir = `${normalizedOptions.directory}/example`;
+  if (tree.exists(`${exampleDir}/pubspec.yaml`)) {
+    tasks.push(
+      addPackageProject(
+        tree,
+        existingProjects,
+        workspaceAnalysisOptions,
+        exampleDir,
+        'application'
+      )
+    );
+  }
 
   await formatFiles(tree);
 
-  return task;
+  return async () => {
+    for (const task of tasks) {
+      if (task) {
+        await task();
+      }
+    }
+  };
 }
 
 function addPackageProject(
