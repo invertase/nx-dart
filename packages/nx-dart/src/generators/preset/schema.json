@@ -4,35 +4,5 @@
   "$id": "Preset",
   "title": "",
   "type": "object",
-  "properties": {
-    "lints": {
-      "type": "string",
-      "description": "The set of lint rules to use.",
-      "enum": ["core", "recommended", "flutter", "all"],
-      "x-prompt": {
-        "message": "Which lint rules would you like to to use?",
-        "type": "list",
-        "items": [
-          {
-            "value": "core",
-            "label": "Core lint rules from the 'lints' package."
-          },
-          {
-            "value": "recommended",
-            "label": "Recommended lint rules from the 'lints' package."
-          },
-          {
-            "value": "flutter",
-            "label": "Lint rules from the 'flutter_lints' package."
-          },
-          {
-            "value": "all",
-            "label": "All lint rules."
-          }
-        ]
-      }
-    }
-  },
-  "required": ["lints"],
-  "additionalProperties": false
+  "properties": {}
 }

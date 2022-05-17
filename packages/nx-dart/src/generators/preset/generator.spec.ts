@@ -1,6 +1,5 @@
 import { Tree } from '@nrwl/devkit';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
-import { LintRules } from '../common/setup-workspace';
 import { expectNxJsonHasPlugin } from '../testing/asserts';
 import generator from './generator';
 
@@ -12,7 +11,7 @@ describe('preset generator', () => {
   });
 
   it('should setup workspace for @nx-dart', async () => {
-    await generator(appTree, { lints: LintRules.core });
+    await generator(appTree, {});
     expectNxJsonHasPlugin(appTree);
   });
 });
