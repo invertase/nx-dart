@@ -2,19 +2,19 @@ import {
   addDependenciesToPackageJson,
   formatFiles,
   Generator,
+  GeneratorCallback,
+  readWorkspaceConfiguration,
   removeDependenciesFromPackageJson,
   Tree,
 } from '@nrwl/devkit';
-import fetch from 'node-fetch';
 import { nxDartPackageJson } from '../../utils/misc';
+import { runAllTasks } from '../utils/generator';
 import { updateNxJson } from '../utils/nx-workspace';
-
-export enum LintRules {
-  core = 'core',
-  recommended = 'recommended',
-  flutter = 'flutter',
-  all = 'all',
-}
+import {
+  ensureWorkspaceAnalysisOptions,
+  LintRules,
+  updateWorkspaceAnalysisOptions,
+} from './analysis-options';
 
 export interface SetupWorkspaceOptions {
   overwrite?: boolean;
@@ -27,15 +27,21 @@ export const setupWorkspaceForNxDart: Generator<SetupWorkspaceOptions> = async (
 ) => {
   const overwrite = options.overwrite ?? false;
 
-  const installDependencies = await addDependenciesToWorkspace(tree);
+  const tasks: (GeneratorCallback | undefined)[] = [];
+
+  addGitignoreRules(tree);
+  tasks.push(await setupWorkspaceDependencies(tree));
   setupNxJson(tree, overwrite);
-  await setupAnalysisOptions(tree, options.lints, overwrite);
+  ensureWorkspacePubspec(tree);
+  ensureWorkspaceAnalysisOptions(tree);
+  tasks.push(await updateWorkspaceAnalysisOptions(tree, options.lints));
+
   await formatFiles(tree);
 
-  return installDependencies;
+  return runAllTasks(tasks);
 };
 
-async function addDependenciesToWorkspace(tree: Tree) {
+async function setupWorkspaceDependencies(tree: Tree) {
   // When a workspace is created with a preset, that preset will be added to the dependencies
   // but we want to add the plugin to the devDependencies. So we remove it from the dependencies
   // first.
@@ -51,10 +57,7 @@ async function addDependenciesToWorkspace(tree: Tree) {
     { '@nx-dart/nx-dart': nxDartPackageJson().version }
   );
 
-  return async () => {
-    await uninstall?.call(null);
-    await install?.call(null);
-  };
+  return runAllTasks([uninstall, install]);
 }
 
 function setupNxJson(tree: Tree, overwrite: boolean) {
@@ -72,6 +75,17 @@ function setupNxJson(tree: Tree, overwrite: boolean) {
         ...nxJson.cli,
         defaultCollection: '@nx-dart/nx-dart',
       };
+    }
+
+    // Make the pubspec.yaml and analysis_options.yaml files at the workspace root
+    // implicit dependencies.
+    const implicitDependencies = (nxJson.implicitDependencies =
+      nxJson.implicitDependencies ?? {});
+    if (!('pubspec.yaml' in implicitDependencies) || overwrite) {
+      implicitDependencies['pubspec.yaml'] = '*';
+    }
+    if (!('analysis_options.yaml' in implicitDependencies) || overwrite) {
+      implicitDependencies['analysis_options.yaml'] = '*';
     }
 
     const tasksRunnerOptions = nxJson.tasksRunnerOptions ?? {};
@@ -100,86 +114,40 @@ function setupNxJson(tree: Tree, overwrite: boolean) {
   });
 }
 
-async function setupAnalysisOptions(
-  tree: Tree,
-  lints: LintRules,
-  overwrite: boolean
-) {
-  if (!tree.exists('analysis_options.yaml') || overwrite) {
-    tree.write('analysis_options.yaml', await buildAnalysisOptionsYaml(lints));
-  }
+const dartFlutterIgnoreRules = `
+# Dart
+.packages
+.dart_tool/
+build/
+doc/api/
+# We only ignore the pubspec.lock at the workspace root here.
+# Other lock files should be ignored at the package level.
+/pubspec.lock
 
-  // Add 'analysis_options.yaml' as an implicit dependency for all projects.
-  updateNxJson(tree, (nxJson) => {
-    const implicitDependencies = (nxJson.implicitDependencies =
-      nxJson.implicitDependencies ?? {});
+# Flutter
+.flutter-plugins
+.flutter-plugins-dependencies
+`;
 
-    if (!('analysis_options.yaml' in implicitDependencies) || overwrite) {
-      implicitDependencies['analysis_options.yaml'] = '*';
-    }
-
-    return nxJson;
-  });
+function addGitignoreRules(tree: Tree) {
+  const gitignore = tree.read('.gitignore', 'utf-8');
+  tree.write('.gitignore', `${gitignore}\n${dartFlutterIgnoreRules}`);
 }
 
-async function buildAnalysisOptionsYaml(lints: LintRules) {
-  const parts: string[] = [];
+const workspacePubspec = (name: string) => `
+name: ${name}
+publish_to: none
 
-  let include: string | undefined;
-  let linterSection: string;
-  switch (lints) {
-    case LintRules.core:
-      include = 'package:lints/core.yaml';
-      break;
-    case LintRules.recommended:
-      include = 'package:lints/recommended.yaml';
-      break;
-    case LintRules.flutter:
-      include = 'package:flutter_lints/flutter.yaml';
-      break;
-    case LintRules.all:
-      linterSection = await downloadAllLintsConfig();
-      break;
-  }
+environment:
+  sdk: '>=2.17.0 <3.0.0'
+`;
 
-  if (include) {
-    parts.push(`
-include: ${include}
-
-`);
-  }
-
-  parts.push(`
-analyzer:
-  language:
-    strict-casts: true
-    strict-inference: true
-    strict-raw-types: true
-
-`);
-
-  if (linterSection) {
-    parts.push(linterSection);
-  }
-
-  return parts.join('');
-}
-
-async function downloadAllLintsConfig() {
-  const url =
-    'https://raw.githubusercontent.com/dart-lang/linter/master/example/all.yaml';
-
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(
-      `Could not download all lint rules from ${url}: ${response.statusText}`
+export function ensureWorkspacePubspec(tree: Tree) {
+  if (!tree.exists('pubspec.yaml')) {
+    const config = readWorkspaceConfiguration(tree);
+    tree.write(
+      'pubspec.yaml',
+      workspacePubspec(config.npmScope.replace('-', '_'))
     );
   }
-  const text = await response.text();
-
-  // Remove comments
-  return text
-    .split('\n')
-    .filter((line) => !line.startsWith('#'))
-    .join('\n');
 }

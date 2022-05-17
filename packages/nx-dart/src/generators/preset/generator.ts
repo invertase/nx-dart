@@ -1,11 +1,12 @@
 import { Generator } from '@nrwl/devkit';
-import { LintRules, setupWorkspaceForNxDart } from '../common/setup-workspace';
+import { setupWorkspaceForNxDart } from '../workspace/setup-workspace';
+import { LintRules } from '../workspace/analysis-options';
 import { PresetGeneratorSchema } from './schema';
 
 const presetGenerator: Generator<PresetGeneratorSchema> = (tree) =>
   setupWorkspaceForNxDart(tree, {
     overwrite: true,
-    lints: LintRules.core,
+    lints: LintRules.recommended,
   });
 
 export default presetGenerator;
