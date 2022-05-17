@@ -264,12 +264,12 @@ void main() {
         include: 'package:flutter_lints/flutter.yaml',
       });
       writeAnalysisOptions(projectRoot, {
-        include: 'package:lint/core.yaml',
+        include: 'package:lints/core.yaml',
       });
       writePubspec(projectRoot, {
         name: project,
         dev_dependencies: {
-          lint: 'any',
+          lints: 'any',
         },
       });
       await runNxCommandAsync(`g @nx-dart/nx-dart:add-package ${projectRoot}`);
@@ -279,8 +279,7 @@ void main() {
         )
       ).toBe(false);
       const pubspec = readPubspec(projectRoot);
-      expect(pubspec.dev_dependencies.lint).toBeUndefined();
-      expect(pubspec.dev_dependencies.flutter_lints).toBeDefined();
+      expect(pubspec.dev_dependencies?.lints).toBeUndefined();
     }, 12000);
   });
 });

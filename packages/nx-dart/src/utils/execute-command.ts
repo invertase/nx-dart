@@ -5,6 +5,7 @@ export interface ExecutableCommand {
   arguments?: string[];
   cwd?: string;
   expectedErrorExitCodes?: number[];
+  silent?: boolean;
 }
 
 export function executeCommand(command: ExecutableCommand): boolean {
@@ -14,7 +15,7 @@ export function executeCommand(command: ExecutableCommand): boolean {
 
   try {
     execFileSync(command.executable, command.arguments, {
-      stdio: 'inherit',
+      stdio: command.silent ? 'ignore' : 'inherit',
       cwd: command.cwd,
     });
     return true;

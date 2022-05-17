@@ -1,5 +1,8 @@
+import { workspaceRoot } from '@nrwl/devkit';
+import * as path from 'path';
 import * as pkg from 'path';
 import * as YAML from 'yaml';
+import { executeCommand } from './execute-command';
 import { readFile } from './fs';
 
 export function pubspecPath(packageRoot: string) {
@@ -44,4 +47,36 @@ export function isFlutterPlugin(pubspec: Pubspec) {
 
 export interface AnalysisOptions {
   include?: string;
+}
+
+export function addHostedDependencyToPackage(
+  packageRoot: string,
+  name: string,
+  { dev }: { dev?: boolean } = {}
+) {
+  const args = ['pub', 'add'];
+  if (dev) {
+    args.push('--dev');
+  }
+  args.push(name);
+
+  executeCommand({
+    executable: 'dart',
+    arguments: args,
+    expectedErrorExitCodes: [],
+    cwd: path.resolve(workspaceRoot, packageRoot),
+    silent: true,
+  });
+}
+
+export function removeDependencyFromPackage(packageRoot: string, name: string) {
+  const args = ['pub', 'remove', name];
+
+  executeCommand({
+    executable: 'dart',
+    arguments: args,
+    expectedErrorExitCodes: [],
+    cwd: path.resolve(workspaceRoot, packageRoot),
+    silent: true,
+  });
 }

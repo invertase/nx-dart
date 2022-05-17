@@ -7,19 +7,20 @@ import {
   ProjectType,
   TargetConfiguration,
   Tree,
-  workspaceRoot,
 } from '@nrwl/devkit';
 import { packageNameFromUri } from '../../utils/dart-source';
-import { executeCommand } from '../../utils/execute-command';
-import { AnalysisOptions, pubspecPath } from '../../utils/package';
+import {
+  AnalysisOptions,
+  pubspecPath,
+  removeDependencyFromPackage,
+} from '../../utils/package';
+import { runAllTasks } from '../utils/generator';
 import {
   inferPackageProjectType,
   readAnalysisOptions,
   readPubspec,
 } from '../utils/package';
 import { AddPackageGeneratorSchema } from './schema';
-import path = require('path');
-
 interface NormalizedOptions extends AddPackageGeneratorSchema {
   projectType: ProjectType;
 }
@@ -70,13 +71,7 @@ export default async function (tree: Tree, options: AddPackageGeneratorSchema) {
 
   await formatFiles(tree);
 
-  return async () => {
-    for (const task of tasks) {
-      if (task) {
-        await task();
-      }
-    }
-  };
+  return runAllTasks(tasks);
 }
 
 function addPackageProject(
@@ -107,11 +102,9 @@ function addPackageProject(
   existingProjects.push(packageName);
 
   if (workspaceAnalysisOptions !== undefined) {
-    return migrateToWorkspaceAnalysisOptions(
-      tree,
-      packageRoot,
-      workspaceAnalysisOptions
-    );
+    // There are workspace wide analysis options, so we remove the package's
+    // analysis options.
+    return removeAnalysisOptions(tree, packageRoot);
   }
 }
 
@@ -150,40 +143,20 @@ function buildPackageTargets(tree: Tree, directory: string) {
   return targets;
 }
 
-function migrateToWorkspaceAnalysisOptions(
+function removeAnalysisOptions(
   tree: Tree,
-  packageRoot: string,
-  workspaceAnalysisOptions: AnalysisOptions
+  packageRoot: string
 ): GeneratorCallback | undefined {
-  const workspaceIncludePackage = packageNameFromUri(
-    workspaceAnalysisOptions.include ?? ''
-  );
-  let includePackage: string | undefined;
-
   const analysisOptions = readAnalysisOptions(tree, packageRoot);
   if (analysisOptions !== undefined) {
     tree.delete(`${packageRoot}/analysis_options.yaml`);
-    includePackage = packageNameFromUri(analysisOptions.include ?? '');
-  }
 
-  if (workspaceIncludePackage !== includePackage) {
-    return () => {
-      if (includePackage) {
-        executeCommand({
-          executable: 'dart',
-          arguments: ['pub', 'remove', includePackage],
-          cwd: path.join(workspaceRoot, packageRoot),
-          expectedErrorExitCodes: [],
-        });
-      }
-      if (workspaceIncludePackage) {
-        executeCommand({
-          executable: 'dart',
-          arguments: ['pub', 'add', '--dev', workspaceIncludePackage],
-          cwd: path.join(workspaceRoot, packageRoot),
-          expectedErrorExitCodes: [],
-        });
-      }
-    };
+    const includePackage = packageNameFromUri(analysisOptions.include ?? '');
+    if (includePackage) {
+      // Remove the package from which analysis options were included.
+      // The pubspec.yaml and analysis_options.yaml at the workspace root
+      // handle everything now.
+      return () => removeDependencyFromPackage(packageRoot, includePackage);
+    }
   }
 }
