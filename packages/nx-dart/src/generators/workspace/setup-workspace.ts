@@ -63,13 +63,10 @@ function setupNxJson(tree: Tree) {
     }
 
     // Make this plugin the default collection.
-    const defaultCollection = nxJson.cli?.defaultCollection;
-    if (!defaultCollection) {
-      nxJson.cli = {
-        ...nxJson.cli,
-        defaultCollection: '@nx-dart/nx-dart',
-      };
-    }
+    nxJson.cli = {
+      ...nxJson.cli,
+      defaultCollection: '@nx-dart/nx-dart',
+    };
 
     const tasksRunnerOptions = nxJson.tasksRunnerOptions ?? {};
     const taskRunner = tasksRunnerOptions.default;

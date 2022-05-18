@@ -6,7 +6,9 @@
   "type": "object",
   "properties": {
     "lints": {
-      "type": "boolean"
+      "type": "boolean",
+      "default": true
     }
-  }
+  },
+  "required": ["lints"]
 }

@@ -11,5 +11,6 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/e2e/add-nx-dart-to-monorepo-e2e',
+  maxConcurrency: 1,
   maxWorkers: 1,
 };

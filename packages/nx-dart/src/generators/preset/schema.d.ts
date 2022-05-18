@@ -1,3 +1,3 @@
 export interface PresetGeneratorSchema {
-  lints?: boolean;
+  lints: boolean;
 }
