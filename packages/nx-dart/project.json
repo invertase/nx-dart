@@ -12,6 +12,7 @@
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "assets": [
           "packages/nx-dart/*.md",
+          "packages/nx-dart/LICENSE",
           {
             "input": "./packages/nx-dart/src",
             "glob": "**/!(*.ts)",

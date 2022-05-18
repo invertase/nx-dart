@@ -7,6 +7,7 @@ import {
   removeDependencyFromPackage,
 } from '../../utils/package';
 import { runAllTasks } from '../utils/generator';
+import { updateNxJson } from '../utils/nx-workspace';
 
 const workspaceAnalysisOptions = `
 analyzer:
@@ -20,6 +21,17 @@ export function ensureWorkspaceAnalysisOptions(tree: Tree) {
   if (!tree.exists('analysis_options.yaml')) {
     tree.write('analysis_options.yaml', workspaceAnalysisOptions);
   }
+
+  updateNxJson(tree, (nxJson) => {
+    // Make the analysis_options.yaml file at the workspace root an implicit dependencies.
+    const implicitDependencies = (nxJson.implicitDependencies =
+      nxJson.implicitDependencies ?? {});
+    if (!('analysis_options.yaml' in implicitDependencies)) {
+      implicitDependencies['analysis_options.yaml'] = '*';
+    }
+
+    return nxJson;
+  });
 }
 
 export enum LintRules {

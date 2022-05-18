@@ -1,0 +1,31 @@
+{
+  "name": "add-nx-dart-to-monorepo",
+  "version": "0.0.1",
+  "description": "Add Nx to a monorepo containing Dart and Flutter packages.",
+  "keywords": [
+    "Monorepo",
+    "Dart",
+    "Flutter",
+    "Nx",
+    "CLI"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blaugold/nx-dart"
+  },
+  "homepage": "https://github.com/blaugold/nx-dart/tree/main/packages/add-nx-dart-to-monorepo",
+  "bugs": {
+    "url": "https://github.com/blaugold/nx-dart/issues"
+  },
+  "license": "MIT",
+  "bin": {
+    "add-nx-dart-to-monorepo": "./src/add-nx-dart-to-monorepo.js"
+  },
+  "scripts": {
+    "prepublishOnly": "cd ../../ && nx build add-nx-dart-to-monorepo"
+  },
+  "publishConfig": {
+    "access": "public",
+    "directory": "../../dist/packages/add-nx-dart-to-monorepo"
+  }
+}

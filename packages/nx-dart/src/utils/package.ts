@@ -65,7 +65,6 @@ export function addHostedDependencyToPackage(
     arguments: args,
     expectedErrorExitCodes: [],
     cwd: path.resolve(workspaceRoot, packageRoot),
-    silent: true,
   });
 }
 
@@ -77,6 +76,5 @@ export function removeDependencyFromPackage(packageRoot: string, name: string) {
     arguments: args,
     expectedErrorExitCodes: [],
     cwd: path.resolve(workspaceRoot, packageRoot),
-    silent: true,
   });
 }

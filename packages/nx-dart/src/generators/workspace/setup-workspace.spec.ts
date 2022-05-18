@@ -1,4 +1,4 @@
-import { readJson, readWorkspaceConfiguration, Tree } from '@nrwl/devkit';
+import { readJson, Tree } from '@nrwl/devkit';
 import { createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 import { nxDartPackageJson } from '../../utils/misc';
 import { expectNxJsonHasPlugin } from '../testing/asserts';
@@ -66,10 +66,8 @@ describe('workspace setup generation', () => {
   it('should add pubspec.yaml', async () => {
     await setupWorkspaceForNxDart(appTree, { lints: LintRules.core });
 
-    const config = readWorkspaceConfiguration(appTree);
     const pubspec = appTree.read('pubspec.yaml', 'utf8');
-
-    expect(pubspec).toContain(`name: ${config.npmScope}`);
+    expect(pubspec).toContain(`name: workspace`);
   });
 
   it('should add analysis_options.yaml with strict type checks', async () => {

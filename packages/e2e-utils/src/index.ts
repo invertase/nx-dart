@@ -1,6 +1,12 @@
 import { getPackageManagerCommand } from '@nrwl/devkit';
-import { readFile, tmpProjPath, updateFile } from '@nrwl/nx-plugin/testing';
+import {
+  cleanup,
+  readFile,
+  tmpProjPath,
+  updateFile,
+} from '@nrwl/nx-plugin/testing';
 import { exec } from 'child_process';
+import * as fs from 'fs';
 import * as YAML from 'yaml';
 
 export function runCommandAsync(
@@ -20,6 +26,7 @@ export function runCommandAsync(
         env: {
           ...process.env,
           NX_WORKSPACE_ROOT_PATH: tmpProjPath(),
+          NX_DART_E2E_VERSION: 'file:../../../dist/packages/nx-dart',
         },
       },
       (err, stdout, stderr) => {
@@ -111,4 +118,9 @@ export function readPubspec(packageRoot: string) {
 export function readAnalysisOptions(packageRoot: string) {
   const content = readFile(`${packageRoot}/analysis_options.yaml`);
   return content ? YAML.parse(content) : undefined;
+}
+
+export function newNonNxWorkspace() {
+  cleanup();
+  fs.mkdirSync(tmpProjPath(), { recursive: true });
 }

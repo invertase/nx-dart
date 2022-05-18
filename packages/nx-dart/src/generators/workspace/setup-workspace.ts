@@ -3,38 +3,32 @@ import {
   formatFiles,
   Generator,
   GeneratorCallback,
-  readWorkspaceConfiguration,
   removeDependenciesFromPackageJson,
   Tree,
 } from '@nrwl/devkit';
 import { nxDartPackageJson } from '../../utils/misc';
+import changeLints from '../change-lints/generator';
 import { runAllTasks } from '../utils/generator';
 import { updateNxJson } from '../utils/nx-workspace';
-import {
-  ensureWorkspaceAnalysisOptions,
-  LintRules,
-  updateWorkspaceAnalysisOptions,
-} from './analysis-options';
+import { LintRules } from './analysis-options';
 
 export interface SetupWorkspaceOptions {
-  overwrite?: boolean;
-  lints: LintRules;
+  lints?: LintRules;
 }
 
 export const setupWorkspaceForNxDart: Generator<SetupWorkspaceOptions> = async (
   tree,
   options
 ) => {
-  const overwrite = options.overwrite ?? false;
-
   const tasks: (GeneratorCallback | undefined)[] = [];
 
-  addGitignoreRules(tree);
+  addWorkspaceGitignoreRules(tree);
   tasks.push(await setupWorkspaceDependencies(tree));
-  setupNxJson(tree, overwrite);
+  setupNxJson(tree);
   ensureWorkspacePubspec(tree);
-  ensureWorkspaceAnalysisOptions(tree);
-  tasks.push(await updateWorkspaceAnalysisOptions(tree, options.lints));
+  if (options.lints) {
+    tasks.push(await changeLints(tree, { lints: options.lints }));
+  }
 
   await formatFiles(tree);
 
@@ -60,7 +54,7 @@ async function setupWorkspaceDependencies(tree: Tree) {
   return runAllTasks([uninstall, install]);
 }
 
-function setupNxJson(tree: Tree, overwrite: boolean) {
+function setupNxJson(tree: Tree) {
   updateNxJson(tree, (nxJson) => {
     // Add this plugin to plugins.
     const plugins = (nxJson.plugins = nxJson.plugins ?? []);
@@ -70,22 +64,11 @@ function setupNxJson(tree: Tree, overwrite: boolean) {
 
     // Make this plugin the default collection.
     const defaultCollection = nxJson.cli?.defaultCollection;
-    if (!defaultCollection || overwrite) {
+    if (!defaultCollection) {
       nxJson.cli = {
         ...nxJson.cli,
         defaultCollection: '@nx-dart/nx-dart',
       };
-    }
-
-    // Make the pubspec.yaml and analysis_options.yaml files at the workspace root
-    // implicit dependencies.
-    const implicitDependencies = (nxJson.implicitDependencies =
-      nxJson.implicitDependencies ?? {});
-    if (!('pubspec.yaml' in implicitDependencies) || overwrite) {
-      implicitDependencies['pubspec.yaml'] = '*';
-    }
-    if (!('analysis_options.yaml' in implicitDependencies) || overwrite) {
-      implicitDependencies['analysis_options.yaml'] = '*';
     }
 
     const tasksRunnerOptions = nxJson.tasksRunnerOptions ?? {};
@@ -114,8 +97,13 @@ function setupNxJson(tree: Tree, overwrite: boolean) {
   });
 }
 
-const dartFlutterIgnoreRules = `
-# Dart
+const nxDartIgnoreRules = `
+# Ignore rules added by nx-dart
+
+## Node
+node_modules/
+
+## Dart
 .packages
 .dart_tool/
 build/
@@ -124,18 +112,24 @@ doc/api/
 # Other lock files should be ignored at the package level.
 /pubspec.lock
 
-# Flutter
+## Flutter
 .flutter-plugins
 .flutter-plugins-dependencies
 `;
 
-function addGitignoreRules(tree: Tree) {
-  const gitignore = tree.read('.gitignore', 'utf-8');
-  tree.write('.gitignore', `${gitignore}\n${dartFlutterIgnoreRules}`);
+function addWorkspaceGitignoreRules(tree: Tree) {
+  let gitignore = '';
+  const currentGitignore = tree.read('.gitignore', 'utf-8');
+  if (currentGitignore) {
+    gitignore += currentGitignore;
+    gitignore += '\n';
+  }
+  gitignore += nxDartIgnoreRules;
+  tree.write('.gitignore', gitignore);
 }
 
-const workspacePubspec = (name: string) => `
-name: ${name}
+const workspacePubspec = `
+name: workspace
 publish_to: none
 
 environment:
@@ -144,10 +138,17 @@ environment:
 
 export function ensureWorkspacePubspec(tree: Tree) {
   if (!tree.exists('pubspec.yaml')) {
-    const config = readWorkspaceConfiguration(tree);
-    tree.write(
-      'pubspec.yaml',
-      workspacePubspec(config.npmScope.replace('-', '_'))
-    );
+    tree.write('pubspec.yaml', workspacePubspec);
   }
+
+  updateNxJson(tree, (nxJson) => {
+    // Make the pubspec.yaml at the workspace root an implicit dependencies.
+    const implicitDependencies = (nxJson.implicitDependencies =
+      nxJson.implicitDependencies ?? {});
+    if (!('pubspec.yaml' in implicitDependencies)) {
+      implicitDependencies['pubspec.yaml'] = '*';
+    }
+
+    return nxJson;
+  });
 }

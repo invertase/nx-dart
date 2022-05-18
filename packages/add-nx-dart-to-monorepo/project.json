@@ -1,0 +1,48 @@
+{
+  "sourceRoot": "packages/add-nx-dart-to-monorepo/src",
+  "projectType": "library",
+  "targets": {
+    "build-base": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "buildableProjectDepsInPackageJsonType": "dependencies",
+        "outputPath": "dist/packages/add-nx-dart-to-monorepo",
+        "main": "packages/add-nx-dart-to-monorepo/src/index.ts",
+        "tsConfig": "packages/add-nx-dart-to-monorepo/tsconfig.lib.json",
+        "assets": [
+          "packages/add-nx-dart-to-monorepo/*.md",
+          "packages/add-nx-dart-to-monorepo/LICENSE"
+        ]
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "npx nx build nx-dart",
+          "npx nx build-base add-nx-dart-to-monorepo",
+          "node ./scripts/chmod.mjs dist/packages/add-nx-dart-to-monorepo/src/add-nx-dart-to-monorepo.js",
+          "node ./scripts/replace-versions.mjs dist/packages/add-nx-dart-to-monorepo"
+        ],
+        "parallel": false
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/add-nx-dart-to-monorepo/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/add-nx-dart-to-monorepo"],
+      "options": {
+        "jestConfig": "packages/add-nx-dart-to-monorepo/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
