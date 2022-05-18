@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import * as url from 'url';
 
-const dirname = new URL('.', import.meta.url).pathname;
+const dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const packageJson = JSON.parse(
   fs.readFileSync(path.join(dirname, '../package.json'), 'utf8')
