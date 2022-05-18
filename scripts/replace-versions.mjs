@@ -24,19 +24,19 @@ const targetDir = process.argv[2];
 
 substitute(targetDir, versions);
 
-function substitute(dir, strings) {
+function substitute(dir, values) {
   const children = fs.readdirSync(dir);
   for (const child of children) {
     const childPath = path.join(dir, child);
     const stat = fs.statSync(childPath);
     if (stat.isDirectory()) {
-      substitute(childPath, strings);
+      substitute(childPath, values);
       continue;
     }
 
     let contents = fs.readFileSync(childPath, 'utf-8');
-    for (const [key, value] of Object.entries(strings)) {
-      contents = contents.replace(new RegExp(`${key}`, 'g'), value);
+    for (const [placeholder, value] of Object.entries(values)) {
+      contents = contents.replace(new RegExp(`${placeholder}`, 'g'), value);
     }
     fs.writeFileSync(childPath, contents, 'utf-8');
   }
