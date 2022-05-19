@@ -1,7 +1,7 @@
 {
   "name": "@nx-dart/nx-dart",
   "version": "0.0.1",
-  "description": "Plugin to add support for Dart and Flutter to Nx workspaces.",
+  "description": "A Nx plugin, that adds support for developing Dart and Flutter packages in a Nx workspace",
   "keywords": [
     "Monorepo",
     "Dart",

@@ -1,6 +1,6 @@
 ## Pull Requests
 
-PRs are welcome! For larger changes, please create a new issue fist.
+PRs are welcome! For larger changes, please create a new issue first.
 
 PRs should have a title that conforms to the
 [conventional commit spec](https://www.conventionalcommits.org/en/v1.0.0/).
@@ -22,5 +22,5 @@ npm run install-workspace-packages
 ## Updating dependencies
 
 After upgrading or adding dependencies, you need to run
-`npm run update-workspace-packages-deps` to update the lock file, accounting for
-linked packages in the workspace.
+`npm run update-workspace-packages-deps` to update the lock file, so that it is
+in sync with linked packages in the workspace.

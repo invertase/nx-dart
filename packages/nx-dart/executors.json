@@ -4,7 +4,7 @@
     "format": {
       "implementation": "./src/executors/format/executor",
       "schema": "./src/executors/format/schema.json",
-      "description": "Formats Dart files."
+      "description": "Formats Dart files in a package."
     },
     "analyze": {
       "implementation": "./src/executors/analyze/executor",
@@ -14,7 +14,7 @@
     "test": {
       "implementation": "./src/executors/test/executor",
       "schema": "./src/executors/test/schema.json",
-      "description": "Runs Dart or Flutter tests."
+      "description": "Runs Dart or Flutter tests in a package."
     }
   }
 }

@@ -16,7 +16,7 @@
     },
     "projectType": {
       "type": "string",
-      "description": "The type of package.",
+      "description": "The Nx project type of the package.",
       "enum": ["application", "library"],
       "alias": "p"
     }

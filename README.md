@@ -1,4 +1,9 @@
-`@nx-dart` adds support for Dart and Flutter to [Nx](https://nx.dev/) workspaces.
+[`@nx-dart/nx-dart`](./packages/nx-dart) is a [Nx](https://nx.dev/) plugin, that
+adds support for developing Dart and Flutter packages in a Nx workspace.
 
-This monorepo is a collection of packages that are used to build the
-`@nx-dart` project.
+This is the monorepo for the `nx-dart` project, which contains the plugin an
+supporting packages.
+
+# Development
+
+See the [contributing guide](./CONTRIBUTING.md) for more information.
