@@ -8,6 +8,7 @@ import {
   TargetConfiguration,
   Tree,
 } from '@nrwl/devkit';
+import * as path from 'path';
 import { packageNameFromUri } from '../../utils/dart-source';
 import {
   AnalysisOptions,
@@ -21,6 +22,7 @@ import {
   readPubspec,
 } from '../utils/package';
 import { AddPackageGeneratorSchema } from './schema';
+
 interface NormalizedOptions extends AddPackageGeneratorSchema {
   projectType: ProjectType;
 }
@@ -42,7 +44,7 @@ function normalizeOptions(
 export default async function (tree: Tree, options: AddPackageGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   const existingProjects = Object.keys(getProjects(tree));
-  const workspaceAnalysisOptions = readAnalysisOptions(tree, '.');
+  const workspaceAnalysisOptions = readAnalysisOptions(tree);
 
   const tasks: (GeneratorCallback | undefined)[] = [];
 
@@ -149,6 +151,15 @@ function removeAnalysisOptions(
 ): GeneratorCallback | undefined {
   const analysisOptions = readAnalysisOptions(tree, packageRoot);
   if (analysisOptions !== undefined) {
+    if (analysisOptions.include) {
+      const include = path.join(packageRoot, analysisOptions.include);
+      if (include === 'analysis_options.yaml') {
+        // This file is including the analysis options from the workspace root.
+        // They customize the analysis options for the package, so we don't remove them.
+        return;
+      }
+    }
+
     tree.delete(`${packageRoot}/analysis_options.yaml`);
 
     const includePackage = packageNameFromUri(analysisOptions.include ?? '');

@@ -82,6 +82,16 @@ describe('add-package generator', () => {
     expect(appTree.exists('test/analysis_options.yaml')).toBe(false);
   });
 
+  it('should not remove analysis_options.yaml if it extends the workspace-wide one', async () => {
+    appTree.write('analysis_options.yaml', '');
+    appTree.write('test/pubspec.yaml', 'name: test');
+    appTree.write('test/analysis_options.yaml', 'include: ../analysis_options.yaml');
+    await generator(appTree, {
+      directory: 'test',
+    });
+    expect(appTree.exists('test/analysis_options.yaml')).toBe(true);
+  });
+
   it('should add project for example package', async () => {
     appTree.write('test/pubspec.yaml', 'name: test');
     appTree.write('test/example/pubspec.yaml', 'name: test_example');

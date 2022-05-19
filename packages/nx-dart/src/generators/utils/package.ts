@@ -28,7 +28,7 @@ export function readFlutterMetadata(
 
 export function readAnalysisOptions(
   tree: Tree,
-  directory: string
+  directory = '.'
 ): AnalysisOptions | undefined {
   if (tree.exists(`${directory}/analysis_options.yaml`)) {
     return (

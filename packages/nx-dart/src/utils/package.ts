@@ -47,6 +47,12 @@ export function isFlutterPlugin(pubspec: Pubspec) {
 
 export interface AnalysisOptions {
   include?: string;
+  analyzer?: {
+    exclude?: string[];
+  };
+  linter?: {
+    rules?: string[] | Record<string, boolean>;
+  };
 }
 
 export function addHostedDependencyToPackage(
