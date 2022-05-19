@@ -3,8 +3,17 @@
   "sourceRoot": "packages/dart-parser/lib",
   "projectType": "library",
   "targets": {
+    "pub-get": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "cwd": "packages/dart-parser",
+        "command": "dart pub get"
+      }
+    },
     "build": {
       "executor": "nx:run-commands",
+      "dependsOn": ["pub-get"],
       "outputs": ["packages/dart-parser/dist"],
       "options": {
         "cwd": "packages/dart-parser",

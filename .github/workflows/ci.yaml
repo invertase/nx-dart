@@ -30,18 +30,13 @@ jobs:
         with:
           sdk: 2.17.0
 
-      - working-directory: packages/dart-parser
-        run: dart pub get
       - run: npm ci
+      - run: npm run install-workspace-packages
 
       - run: npx nx workspace-lint
       - run: npx nx format:check
       - run: npx nx affected --target=lint --parallel=3
       - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
-      - run: npx nx affected --target=build --parallel=3
-        # We need to run `npm ci` again after building because npm only links workspace packages
-        # if they exist and we point to the built packages in dist which only exist after building.
-      - run: npm ci
         # Using `npx nx affected --target=e2e --parallel=1` fails for some reason, so we just run
         # the e2e tests manually, for now.
       - run: npx nx e2e nx-dart-e2e
