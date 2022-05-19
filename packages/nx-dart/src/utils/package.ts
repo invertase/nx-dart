@@ -55,7 +55,7 @@ export interface AnalysisOptions {
   };
 }
 
-export function addHostedDependencyToPackage(
+export async function addHostedDependencyToPackage(
   packageRoot: string,
   name: string,
   { dev }: { dev?: boolean } = {}
@@ -66,7 +66,7 @@ export function addHostedDependencyToPackage(
   }
   args.push(name);
 
-  executeCommand({
+  await executeCommand({
     executable: 'dart',
     arguments: args,
     expectedErrorExitCodes: [],
@@ -74,10 +74,13 @@ export function addHostedDependencyToPackage(
   });
 }
 
-export function removeDependencyFromPackage(packageRoot: string, name: string) {
+export async function removeDependencyFromPackage(
+  packageRoot: string,
+  name: string
+) {
   const args = ['pub', 'remove', name];
 
-  executeCommand({
+  await executeCommand({
     executable: 'dart',
     arguments: args,
     expectedErrorExitCodes: [],

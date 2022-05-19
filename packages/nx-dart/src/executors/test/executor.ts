@@ -25,7 +25,7 @@ export default async function runExecutor(
     removeFile(path.join(projectRoot, coverageDir));
   }
 
-  let success = executeCommand({
+  let success = await executeCommand({
     executable: tool,
     arguments: args,
     cwd: projectRoot,
@@ -34,7 +34,7 @@ export default async function runExecutor(
   if (success && options.coverage && tool === 'dart') {
     // The `flutter` tool already outputs coverage data in the form of a .lcov file,
     // so we only need to convert it when using the `dart` tool.
-    success = convertCoverageDataToLcov(projectRoot);
+    success = await convertCoverageDataToLcov(projectRoot);
   }
 
   return {
@@ -84,9 +84,9 @@ function buildTestArguments(
   return command;
 }
 
-function convertCoverageDataToLcov(projectRoot: string) {
+async function convertCoverageDataToLcov(projectRoot: string) {
   // Ensure that the `coverage` package is globally installed.
-  let success = executeCommand({
+  let success = await executeCommand({
     executable: 'dart',
     arguments: ['pub', 'global', 'activate', 'coverage'],
   });
@@ -95,7 +95,7 @@ function convertCoverageDataToLcov(projectRoot: string) {
   }
 
   // Then run the conversion.
-  success = executeCommand({
+  success = await executeCommand({
     executable: 'dart',
     arguments: [
       'pub',

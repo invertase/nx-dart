@@ -10,7 +10,7 @@ export default async function runExecutor(
   const args = buildAnalyzeArguments(options);
 
   return {
-    success: executeCommand({
+    success: await executeCommand({
       executable: 'dart',
       arguments: args,
       cwd: projectRoot,

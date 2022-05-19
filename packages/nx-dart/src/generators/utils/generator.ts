@@ -7,9 +7,9 @@ export function runAllTasks(
   if (runnableTasks.length === 0) {
     return undefined;
   }
-  return () => {
+  return async () => {
     for (const task of runnableTasks) {
-      task();
+      await task();
     }
   };
 }
