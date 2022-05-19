@@ -200,6 +200,7 @@ function ensureWorkspacePackageJson(repoRoot: string) {
 function addDepsToPackageJson(repoRoot: string, useCloud: boolean) {
   const json = readJsonFile(repoRoot, 'package.json');
   if (!json.devDependencies) json.devDependencies = {};
+  json.devDependencies['typescript'] = 'TYPESCRIPT_VERSION';
   json.devDependencies['nx'] = 'NX_VERSION';
   json.devDependencies['@nx-dart/nx-dart'] =
     process.env['NX_DART_E2E_VERSION'] ?? 'NX_DART_VERSION';

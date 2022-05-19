@@ -1,4 +1,5 @@
 import {
+  checkFilesExist,
   readFile,
   readJson,
   runNxCommandAsync,
@@ -36,6 +37,9 @@ describe('add-nx-dart-to-monorepo', () => {
 
     const workspace = readJson('workspace.json');
     expect(workspace.projects['a']).toBeDefined();
+
+    await runNxCommandAsync('graph --file graph.json');
+    checkFilesExist('graph.json');
   }, 240000);
 });
 
