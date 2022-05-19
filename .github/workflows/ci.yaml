@@ -43,5 +43,5 @@ jobs:
         # if they exist and we point to the built packages in dist which only exist after building.
         # We also have to reset the nx cache because it is stored in node_modules and can become
         # invalid after running `npm ci`.
-      - run: npm ci && npm nx reset
+      - run: npm ci && npx nx reset
       - run: npx nx affected --target=e2e --parallel=1
