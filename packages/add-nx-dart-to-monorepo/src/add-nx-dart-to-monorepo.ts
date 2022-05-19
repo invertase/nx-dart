@@ -200,8 +200,15 @@ function ensureWorkspacePackageJson(repoRoot: string) {
 function addDepsToPackageJson(repoRoot: string, useCloud: boolean) {
   const json = readJsonFile(repoRoot, 'package.json');
   if (!json.devDependencies) json.devDependencies = {};
-  json.devDependencies['typescript'] = 'TYPESCRIPT_VERSION';
   json.devDependencies['nx'] = 'NX_VERSION';
+  json.devDependencies['@nrwl/cli'] = 'NX_VERSION';
+  json.devDependencies['@nrwl/workspace'] = 'NX_VERSION';
+  if (!json.devDependencies['prettier']) {
+    json.devDependencies['prettier'] = 'PRETTIER_VERSION';
+  }
+  if (!json.devDependencies['typescript']) {
+    json.devDependencies['typescript'] = 'TYPESCRIPT_VERSION';
+  }
   json.devDependencies['@nx-dart/nx-dart'] =
     process.env['NX_DART_E2E_VERSION'] ?? 'NX_DART_VERSION';
   if (useCloud) {
@@ -222,6 +229,7 @@ function writeJsonFile(repoRoot: string, file: string, json: unknown) {
 
 function createNxJson(repoRoot: string) {
   writeJsonFile(repoRoot, 'nx.json', {
+    $schema: './node_modules/nx/schemas/nx-schema.json',
     affected: {
       defaultBase: deduceDefaultBase(),
     },
@@ -284,6 +292,7 @@ function deduceDefaultBase() {
 
 function createWorkspaceJson(repoRoot: string) {
   writeJsonFile(repoRoot, 'workspace.json', {
+    $schema: './node_modules/nx/schemas/workspace-schema.json',
     version: 2,
     projects: {},
   });
