@@ -13,11 +13,13 @@ const lernaJson = JSON.parse(
 );
 
 const nxVersion = packageJson.devDependencies.nx;
+const prettierVersion = packageJson.devDependencies.prettier;
 const typescriptVersion = packageJson.devDependencies.typescript;
 const nxDartVersion = lernaJson.version;
 
 const versions = {
   NX_VERSION: nxVersion,
+  PRETTIER_VERSION: prettierVersion,
   TYPESCRIPT_VERSION: typescriptVersion,
   NX_DART_VERSION: nxDartVersion,
 };
