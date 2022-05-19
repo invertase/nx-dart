@@ -90,7 +90,6 @@ export async function updateLintRulesInAnalysisOptions(
   // Include analysis options from package or inline lint rules.
   const currentInclude = contents.get('include') as string | undefined;
   let include: string | undefined;
-  let lintRules: string[];
   switch (lints) {
     case LintRules.core:
       include = 'package:lints/core.yaml';
@@ -102,7 +101,8 @@ export async function updateLintRulesInAnalysisOptions(
       include = 'package:flutter_lints/flutter.yaml';
       break;
     case LintRules.all:
-      lintRules = await downloadAllLintRules();
+      include = './all_lint_rules.yaml';
+      tree.write(include, await downloadAllLintRules());
       break;
   }
 
@@ -110,25 +110,6 @@ export async function updateLintRulesInAnalysisOptions(
     contents.delete('include');
     if (include) {
       contents.items.splice(0, 0, doc.createPair('include', include));
-    }
-  }
-
-  if (lintRules) {
-    let linter = contents.get('linter') as YAML.YAMLMap;
-    if (!(linter instanceof YAML.YAMLMap)) {
-      linter = new YAML.YAMLMap();
-      contents.items.push(doc.createPair('linter', linter));
-    }
-    let rules = linter.get('rules') as YAML.YAMLSeq;
-    if (!(rules instanceof YAML.YAMLMap)) {
-      rules = new YAML.YAMLSeq();
-      linter.items.push(doc.createPair('rules', rules));
-    }
-    const currentRules = rules.toJSON();
-    for (const rule of lintRules) {
-      if (!currentRules.includes(rule)) {
-        rules.add(doc.createNode(rule));
-      }
     }
   }
 
@@ -157,7 +138,7 @@ export async function updateLintRulesInAnalysisOptions(
   return runAllTasks(tasks);
 }
 
-async function downloadAllLintRules(): Promise<string[]> {
+async function downloadAllLintRules(): Promise<string> {
   const analysisOptionsUrl =
     'https://raw.githubusercontent.com/dart-lang/linter/master/example/all.yaml';
 
@@ -168,5 +149,5 @@ async function downloadAllLintRules(): Promise<string[]> {
     );
   }
 
-  return YAML.parse(await response.text()).linter.rules;
+  return await response.text();
 }
