@@ -17,5 +17,5 @@ describe('preset generator', () => {
     expect(analysisOptions).toContain(
       'include: package:lints/recommended.yaml'
     );
-  }, 120000);
+  }, 128000);
 });
