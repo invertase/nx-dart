@@ -1,7 +1,8 @@
 import { formatFiles, Tree } from '@nrwl/devkit';
 import {
   ensureWorkspaceAnalysisOptions,
-  updateWorkspaceAnalysisOptions,
+  excludeNodeModulesFromAnalysisOptions,
+  updateLintRulesInAnalysisOptions,
 } from '../workspace/analysis-options';
 import { ensureWorkspacePubspec } from '../workspace/setup-workspace';
 import { ChangeLintsGeneratorSchema } from './schema';
@@ -12,7 +13,8 @@ export default async function (
 ) {
   ensureWorkspacePubspec(tree);
   ensureWorkspaceAnalysisOptions(tree);
-  const task = await updateWorkspaceAnalysisOptions(tree, options.lints);
+  excludeNodeModulesFromAnalysisOptions(tree);
+  const task = await updateLintRulesInAnalysisOptions(tree, options.lints);
   await formatFiles(tree);
   return task;
 }

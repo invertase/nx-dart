@@ -41,7 +41,37 @@ export enum LintRules {
   all = 'all',
 }
 
-export async function updateWorkspaceAnalysisOptions(
+export async function excludeNodeModulesFromAnalysisOptions(tree: Tree) {
+  const analysisOptions = tree.read('analysis_options.yaml', 'utf-8');
+  const doc = YAML.parseDocument(analysisOptions);
+
+  let contents: YAML.YAMLMap;
+  if (doc.contents instanceof YAML.YAMLMap) {
+    contents = doc.contents;
+  } else {
+    contents = new YAML.YAMLMap();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    doc.contents = contents as any;
+  }
+
+  let analyzer = contents.get('analyzer') as YAML.YAMLMap;
+  if (!(analyzer instanceof YAML.YAMLMap)) {
+    analyzer = new YAML.YAMLMap();
+    contents.set(doc.createNode('analyzer'), analyzer);
+  }
+  let exclude = analyzer.get('exclude') as YAML.YAMLSeq;
+  if (!(exclude instanceof YAML.YAMLSeq)) {
+    exclude = new YAML.YAMLSeq();
+    analyzer.items.splice(0, 0, doc.createPair('exclude', exclude));
+  }
+  if (!exclude.toJSON().includes('node_modules/**')) {
+    exclude.add(doc.createNode('node_modules/**'));
+  }
+
+  tree.write('analysis_options.yaml', doc.toString());
+}
+
+export async function updateLintRulesInAnalysisOptions(
   tree: Tree,
   lints: LintRules
 ): Promise<GeneratorCallback | undefined> {
@@ -55,21 +85,6 @@ export async function updateWorkspaceAnalysisOptions(
     contents = new YAML.YAMLMap();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     doc.contents = contents as any;
-  }
-
-  // Exclude node_modules from analysis.
-  let analyzer = contents.get('analyzer') as YAML.YAMLMap;
-  if (!(analyzer instanceof YAML.YAMLMap)) {
-    analyzer = new YAML.YAMLMap();
-    contents.set(doc.createNode('analyzer'), analyzer);
-  }
-  let exclude = analyzer.get('exclude') as YAML.YAMLSeq;
-  if (!(exclude instanceof YAML.YAMLSeq)) {
-    exclude = new YAML.YAMLSeq();
-    analyzer.items.splice(0, 0, doc.createPair('exclude', exclude));
-  }
-  if (!exclude.toJSON().includes('node_modules/**')) {
-    exclude.add(doc.createNode('node_modules/**'));
   }
 
   // Include analysis options from package or inline lint rules.

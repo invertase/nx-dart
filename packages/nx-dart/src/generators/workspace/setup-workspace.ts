@@ -10,7 +10,10 @@ import { nxDartPackageJson } from '../../utils/misc';
 import changeLints from '../change-lints/generator';
 import { runAllTasks } from '../utils/generator';
 import { updateNxJson } from '../utils/nx-workspace';
-import { LintRules } from './analysis-options';
+import {
+  excludeNodeModulesFromAnalysisOptions,
+  LintRules,
+} from './analysis-options';
 
 export interface SetupWorkspaceOptions {
   lints?: LintRules;
@@ -26,6 +29,9 @@ export const setupWorkspaceForNxDart: Generator<SetupWorkspaceOptions> = async (
   tasks.push(await setupWorkspaceDependencies(tree));
   setupNxJson(tree);
   ensureWorkspacePubspec(tree);
+  if (tree.exists('analysis_options.yaml')) {
+    excludeNodeModulesFromAnalysisOptions(tree);
+  }
   if (options.lints) {
     tasks.push(await changeLints(tree, { lints: options.lints }));
   }
