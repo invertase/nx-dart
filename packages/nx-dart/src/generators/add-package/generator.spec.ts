@@ -85,7 +85,10 @@ describe('add-package generator', () => {
   it('should not remove analysis_options.yaml if it extends the workspace-wide one', async () => {
     appTree.write('analysis_options.yaml', '');
     appTree.write('test/pubspec.yaml', 'name: test');
-    appTree.write('test/analysis_options.yaml', 'include: ../analysis_options.yaml');
+    appTree.write(
+      'test/analysis_options.yaml',
+      'include: ../analysis_options.yaml'
+    );
     await generator(appTree, {
       directory: 'test',
     });
