@@ -8,7 +8,6 @@ import {
   uniq,
   updateFile,
 } from '@nrwl/nx-plugin/testing';
-import * as path from 'path';
 import {
   addPluginToNxJson,
   addProjectToWorkspace,
@@ -17,7 +16,8 @@ import {
   runNxCommandAsync,
   writeAnalysisOptions,
   writePubspec,
-} from './utils';
+} from '@nx-dart/e2e-utils';
+import * as path from 'path';
 
 describe('nx-dart', () => {
   beforeAll(() => {

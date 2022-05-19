@@ -1,4 +1,5 @@
 import { execFileSync } from 'child_process';
+import { platform } from 'os';
 
 export interface ExecutableCommand {
   executable: string;
@@ -17,6 +18,8 @@ export function executeCommand(command: ExecutableCommand): boolean {
     execFileSync(command.executable, command.arguments, {
       stdio: command.silent ? 'ignore' : 'inherit',
       cwd: command.cwd,
+      // Ensures that we can use executable names without extensions like .bat on Windows.
+      shell: platform() === 'win32',
     });
     return true;
   } catch (e) {

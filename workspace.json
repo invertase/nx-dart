@@ -1,7 +1,10 @@
 {
   "version": 2,
   "projects": {
+    "add-nx-dart-to-monorepo": "packages/add-nx-dart-to-monorepo",
+    "add-nx-dart-to-monorepo-e2e": "e2e/add-nx-dart-to-monorepo-e2e",
     "dart-parser": "packages/dart-parser",
+    "e2e-utils": "packages/e2e-utils",
     "nx-dart": "packages/nx-dart",
     "nx-dart-e2e": "e2e/nx-dart-e2e"
   }

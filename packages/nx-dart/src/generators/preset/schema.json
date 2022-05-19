@@ -4,5 +4,11 @@
   "$id": "Preset",
   "title": "",
   "type": "object",
-  "properties": {}
+  "properties": {
+    "lints": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": ["lints"]
 }

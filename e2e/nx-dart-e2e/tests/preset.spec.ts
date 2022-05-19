@@ -1,5 +1,5 @@
 import { ensureNxProject, readFile, readJson } from '@nrwl/nx-plugin/testing';
-import { readPubspec, runNxCommandAsync } from './utils';
+import { readPubspec, runNxCommandAsync } from '@nx-dart/e2e-utils';
 
 describe('preset generator', () => {
   it('should setup the workspace', async () => {
@@ -17,5 +17,5 @@ describe('preset generator', () => {
     expect(analysisOptions).toContain(
       'include: package:lints/recommended.yaml'
     );
-  }, 120000);
+  }, 128000);
 });
