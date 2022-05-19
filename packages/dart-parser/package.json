@@ -6,6 +6,10 @@
     "url": "https://github.com/blaugold/nx-dart"
   },
   "homepage": "https://github.com/blaugold/nx-dart/tree/main/packages/dart-parser",
+  "bugs": {
+    "url": "https://github.com/blaugold/nx-dart/issues"
+  },
+  "license": "MIT",
   "main": "./dist/index.js",
   "typings": "./lib/index.d.ts",
   "scripts": {

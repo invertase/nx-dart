@@ -2,6 +2,13 @@
   "name": "@nx-dart/nx-dart",
   "version": "0.0.1",
   "description": "Plugin to add support for Dart and Flutter to Nx workspaces.",
+  "keywords": [
+    "Monorepo",
+    "Dart",
+    "Flutter",
+    "Nx",
+    "CLI"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/blaugold/nx-dart"
@@ -10,6 +17,7 @@
   "bugs": {
     "url": "https://github.com/blaugold/nx-dart/issues"
   },
+  "license": "MIT",
   "main": "src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
