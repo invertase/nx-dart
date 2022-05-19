@@ -37,7 +37,4 @@ jobs:
       - run: npx nx format:check
       - run: npx nx affected --target=lint --parallel=3
       - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
-        # Using `npx nx affected --target=e2e --parallel=1` fails for some reason, so we just run
-        # the e2e tests manually, for now.
-      - run: npx nx e2e nx-dart-e2e
-      - run: npx nx e2e add-nx-dart-to-monorepo-e2e
+      - run: npx nx affected --target=e2e --parallel 1

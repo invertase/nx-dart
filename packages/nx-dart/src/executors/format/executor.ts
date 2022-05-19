@@ -23,7 +23,7 @@ export default async function runExecutor(
 
   let success = true;
   for (const chunk of chunks) {
-    if (!format(projectNode.data.root, chunk, options.check)) {
+    if (!(await format(projectNode.data.root, chunk, options.check))) {
       success = false;
     }
   }
@@ -39,7 +39,11 @@ function filesToFormat(
   return projectNode.data.files.map((file) => file.file).filter(isDartFile);
 }
 
-function format(projectRoot: string, files: string[], check: boolean): boolean {
+async function format(
+  projectRoot: string,
+  files: string[],
+  check: boolean
+): Promise<boolean> {
   const args = buildFormatArguments(
     check,
     files.map((filePath) => path.relative(projectRoot, filePath))
