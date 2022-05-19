@@ -17,6 +17,8 @@ export function executeCommand(command: ExecutableCommand): boolean {
     execFileSync(command.executable, command.arguments, {
       stdio: command.silent ? 'ignore' : 'inherit',
       cwd: command.cwd,
+      // Ensures that we can use executable names without extensions like .bat on Windows.
+      shell: true,
     });
     return true;
   } catch (e) {

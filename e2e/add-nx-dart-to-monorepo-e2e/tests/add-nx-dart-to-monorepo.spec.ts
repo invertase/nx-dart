@@ -1,9 +1,15 @@
-import { readFile, readJson, runNxCommandAsync } from '@nrwl/nx-plugin/testing';
+import {
+  readFile,
+  readJson,
+  runNxCommandAsync,
+  tmpProjPath,
+} from '@nrwl/nx-plugin/testing';
 import {
   newNonNxWorkspace,
   runCommandAsync,
   writePubspec,
 } from '@nx-dart/e2e-utils';
+import * as path from 'path';
 
 describe('add-nx-dart-to-monorepo', () => {
   beforeAll(() => {});
@@ -33,5 +39,8 @@ describe('add-nx-dart-to-monorepo', () => {
 });
 
 function addNxDartToMonorepoBin() {
-  return '../../../node_modules/.bin/add-nx-dart-to-monorepo';
+  return path.resolve(
+    tmpProjPath(),
+    '../../../node_modules/.bin/add-nx-dart-to-monorepo'
+  );
 }
