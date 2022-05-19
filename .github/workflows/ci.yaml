@@ -41,7 +41,8 @@ jobs:
       - run: npx nx affected --target=build --parallel=3
         # We need to run `npm ci` again after building because npm only links workspace packages
         # if they exist and we point to the built packages in dist which only exist after building.
-        # We also have to reset the nx cache because it is stored in node_modules and can become
-        # invalid after running `npm ci`.
-      - run: npm ci && npx nx reset
-      - run: npx nx affected --target=e2e --parallel=1
+      - run: npm ci
+        # Using `npx nx affected --target=e2e --parallel=1` fails for some reason, so we just run
+        # the e2e tests manually, for now.
+      - run: npx nx e2e nx-dart-e2e
+      - run: npx nx e2e add-nx-dart-to-monorepo-e2e
