@@ -5,9 +5,20 @@ import {
   tmpProjPath,
   updateFile,
 } from '@nrwl/nx-plugin/testing';
-import { exec } from 'child_process';
+import { exec, execSync } from 'child_process';
 import * as fs from 'fs';
 import * as YAML from 'yaml';
+
+function execOptions() {
+  return {
+    cwd: tmpProjPath(),
+    env: {
+      ...process.env,
+      NX_WORKSPACE_ROOT_PATH: tmpProjPath(),
+      NX_DART_E2E_VERSION: 'file:../../../dist/packages/nx-dart',
+    },
+  };
+}
 
 export function runCommandAsync(
   command: string,
@@ -19,23 +30,12 @@ export function runCommandAsync(
   stderr: string;
 }> {
   return new Promise((resolve, reject) => {
-    exec(
-      command,
-      {
-        cwd: tmpProjPath(),
-        env: {
-          ...process.env,
-          NX_WORKSPACE_ROOT_PATH: tmpProjPath(),
-          NX_DART_E2E_VERSION: 'file:../../../dist/packages/nx-dart',
-        },
-      },
-      (err, stdout, stderr) => {
-        if (!opts.silenceError && err) {
-          reject(err);
-        }
-        resolve({ stdout, stderr });
+    exec(command, execOptions(), (err, stdout, stderr) => {
+      if (!opts.silenceError && err) {
+        reject(err);
       }
-    );
+      resolve({ stdout, stderr });
+    });
   });
 }
 
@@ -50,6 +50,15 @@ export function runNxCommandAsync(
 }> {
   const pmc = getPackageManagerCommand();
   return runCommandAsync(`${pmc.exec} nx ${command}`, opts);
+}
+
+export function runCommandDebug(command: string) {
+  execSync(command, { ...execOptions(), stdio: 'inherit' });
+}
+
+export function runNxCommandDebug(command: string) {
+  const pmc = getPackageManagerCommand();
+  runCommandDebug(`${pmc.exec} nx ${command}`);
 }
 
 export function addPluginToNxJson(plugin: string) {
