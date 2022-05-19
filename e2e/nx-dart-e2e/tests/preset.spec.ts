@@ -1,10 +1,13 @@
 import { ensureNxProject, readFile, readJson } from '@nrwl/nx-plugin/testing';
-import { readPubspec, runNxCommandAsync } from '@nx-dart/e2e-utils';
+import { readPubspec, runNxCommandDebug } from '@nx-dart/e2e-utils';
 
 describe('preset generator', () => {
   it('should setup the workspace', async () => {
+    console.log('preparing tmp workspace...');
     ensureNxProject('@nx-dart/nx-dart', 'dist/packages/nx-dart');
-    await runNxCommandAsync('generate @nx-dart/nx-dart:preset');
+
+    console.log('running preset generator...');
+    runNxCommandDebug('generate @nx-dart/nx-dart:preset');
 
     const nxJson = readJson('nx.json');
     expect(nxJson.cli?.defaultCollection).toBe('@nx-dart/nx-dart');
