@@ -47,7 +47,9 @@ describe('analysis options generation', () => {
   it('should support all lint rules', async () => {
     await setupWorkspaceForNxDart(appTree, { lints: LintRules.all });
 
+    expect(appTree.exists('all_lint_rules.yaml')).toBe(true);
+
     const analysisOptions = readYaml(appTree, 'analysis_options.yaml');
-    expect(analysisOptions.linter.rules).toBeDefined();
+    expect(analysisOptions.include).toBe('./all_lint_rules.yaml');
   });
 });
