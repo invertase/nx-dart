@@ -26,12 +26,13 @@ describe('add-nx-dart-to-monorepo', () => {
       `${addNxDartToMonorepoBin()} --nxCloud false --lints core`
     );
 
-    expect(stdout).toContain('🎉 Done!');
     expect(stderr).toBe('');
+    expect(stdout).toContain('🎉 Done!');
 
     expect(readFile('analysis_options.yaml')).toContain(
       'include: package:lints/core.yaml'
     );
+    expect(readFile('pubspec.yaml')).toContain('lints:');
 
     const workspace = readJson('workspace.json');
     expect(workspace.projects['a']).toBeDefined();

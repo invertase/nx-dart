@@ -22,7 +22,7 @@
     "add-nx-dart-to-monorepo": "./src/add-nx-dart-to-monorepo.js"
   },
   "scripts": {
-    "prepublishOnly": "cd ../../ && nx build add-nx-dart-to-monorepo"
+    "prepublishOnly": "cd ../../ && nx build-and-prepare add-nx-dart-to-monorepo"
   },
   "publishConfig": {
     "access": "public",

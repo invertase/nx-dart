@@ -2,7 +2,7 @@
   "sourceRoot": "packages/add-nx-dart-to-monorepo/src",
   "projectType": "library",
   "targets": {
-    "build-base": {
+    "build": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -16,17 +16,16 @@
         ]
       }
     },
-    "build": {
+    "build-and-prepare": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx nx build nx-dart",
-          "npx nx build-base add-nx-dart-to-monorepo",
           "node ./scripts/chmod.mjs dist/packages/add-nx-dart-to-monorepo/src/add-nx-dart-to-monorepo.js",
           "node ./scripts/replace-versions.mjs dist/packages/add-nx-dart-to-monorepo"
         ],
         "parallel": false
-      }
+      },
+      "dependsOn": ["build"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -44,5 +43,6 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "implicitDependencies": ["nx-dart"]
 }

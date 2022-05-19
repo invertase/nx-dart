@@ -39,5 +39,7 @@ jobs:
       - run: npx nx affected --target=lint --parallel=3
       - run: npx nx affected --target=test --parallel=3 --ci --code-coverage
       - run: npx nx affected --target=build --parallel=3
+        # We need to run `npm ci` again after building because npm only links workspace packages
+        # if they exist and we point to the built packages in dist which only exist after building.
       - run: npm ci
       - run: npx nx affected --target=e2e --parallel=1

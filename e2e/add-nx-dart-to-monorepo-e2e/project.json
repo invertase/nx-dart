@@ -5,7 +5,7 @@
     "e2e": {
       "executor": "@nrwl/nx-plugin:e2e",
       "options": {
-        "target": "add-nx-dart-to-monorepo:build",
+        "target": "add-nx-dart-to-monorepo:build-and-prepare",
         "jestConfig": "e2e/add-nx-dart-to-monorepo-e2e/jest.config.ts"
       }
     }
