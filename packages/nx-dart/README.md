@@ -74,6 +74,7 @@ npx nx g change-lints flutter
 Formats Dart files in a package.
 
 ```json
+// libs/foo/project.json
 {
   "targets": {
     "format": {
@@ -94,6 +95,7 @@ Formats Dart files in a package.
 Analyzes a Dart package.
 
 ```json
+// libs/foo/project.json
 {
   "targets": {
     "analyze": {
@@ -114,15 +116,16 @@ Analyzes a Dart package.
 Runs Dart or Flutter tests in a package.
 
 ```json
+// libs/foo/project.json
 {
   "targets": {
     "test": {
       "executor": "@nx-dart/nx-dart:test",
-      "outputs": ["<package-root>/coverage"]
+      "outputs": ["libs/foo/coverage"]
     },
     "e2e": {
       "executor": "@nx-dart/nx-dart:test",
-      "outputs": ["<package-root>/coverage"],
+      "outputs": ["libs/foo/coverage"],
       "options": {
         "targets": ["integration_test"]
       }
@@ -135,11 +138,12 @@ Runs Dart or Flutter tests in a package.
 
 - `targets`: The files or directories which contain the tests to run.
 - `coverage`: Whether to collect coverage information. The `dart` tool does not
-  output lcov.info files by default, which is why the executor converts the Dart
-  coverage data into a lcov.info file automatically. The `flutter` tool outputs
-  an lcov.info by default.
+  output lcov.info files by default. The executor converts the Dart coverage
+  data into a lcov.info file automatically. The `flutter` tool outputs an
+  lcov.info file by default.
 
 All additional options are passed to the Dart or Flutter test tool.
+Abbreviations are not supported.
 
 [nx]: https://nx.dev/
 [lints]: https://pub.dev/packages/lints
