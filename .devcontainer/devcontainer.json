@@ -4,6 +4,7 @@
     "common": {},
     "node": {}
   },
+  "onCreateCommand": "npm i -g nx && npm i",
   "extensions": [
     "nrwl.angular-console",
     "esbenp.prettier-vscode",
