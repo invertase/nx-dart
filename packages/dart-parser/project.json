@@ -1,4 +1,5 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "root": "packages/dart-parser",
   "sourceRoot": "packages/dart-parser/lib",
   "projectType": "library",
@@ -11,14 +12,17 @@
         "command": "dart pub get"
       }
     },
-    "build": {
+    "build-base": {
       "executor": "nx:run-commands",
-      "dependsOn": ["pub-get"],
       "outputs": ["packages/dart-parser/dist"],
       "options": {
         "cwd": "packages/dart-parser",
         "command": "dart ./tool/build.dart"
       }
+    },
+    "build": {
+      "executor": "nx:noop",
+      "outputs": []
     }
   }
 }

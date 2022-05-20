@@ -31,7 +31,6 @@ jobs:
           sdk: 2.17.0
 
       - run: npm ci
-      - run: npm run install-workspace-packages
 
       - run: npx nx workspace-lint
       - run: npx nx format:check

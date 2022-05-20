@@ -1,8 +1,9 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/nx-dart/src",
   "projectType": "library",
   "targets": {
-    "build": {
+    "build-base": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -34,6 +35,13 @@
             "output": "."
           }
         ]
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["dist/packages/nx-dart"],
+      "options": {
+        "command": "node ./scripts/prepare-package-json.mjs dist/packages/nx-dart"
       }
     },
     "lint": {

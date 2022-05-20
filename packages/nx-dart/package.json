@@ -18,7 +18,7 @@
     "url": "https://github.com/blaugold/nx-dart/issues"
   },
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "../../dist/packages/nx-dart/src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
   "dependencies": {

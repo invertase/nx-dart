@@ -1,8 +1,9 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/add-nx-dart-to-monorepo/src",
   "projectType": "library",
   "targets": {
-    "build": {
+    "build-base": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -12,20 +13,22 @@
         "tsConfig": "packages/add-nx-dart-to-monorepo/tsconfig.lib.json",
         "assets": [
           "packages/add-nx-dart-to-monorepo/*.md",
-          "packages/add-nx-dart-to-monorepo/LICENSE"
+          "packages/add-nx-dart-to-monorepo/LICENSE",
+          "packages/add-nx-dart-to-monorepo/bin/add-nx-dart-to-monorepo.js"
         ]
       }
     },
-    "build-and-prepare": {
+    "build": {
       "executor": "nx:run-commands",
+      "outputs": ["dist/packages/add-nx-dart-to-monorepo"],
       "options": {
         "commands": [
-          "node ./scripts/chmod.mjs dist/packages/add-nx-dart-to-monorepo/src/add-nx-dart-to-monorepo.js",
+          "node ./scripts/chmod.mjs dist/packages/add-nx-dart-to-monorepo/bin/add-nx-dart-to-monorepo.js",
+          "node ./scripts/prepare-package-json.mjs dist/packages/add-nx-dart-to-monorepo",
           "node ./scripts/replace-versions.mjs dist/packages/add-nx-dart-to-monorepo"
         ],
         "parallel": false
-      },
-      "dependsOn": ["build"]
+      }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

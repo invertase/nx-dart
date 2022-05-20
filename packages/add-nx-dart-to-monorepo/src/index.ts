@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 // Adapted from add-nx-to-monorepo
 // https://github.com/nrwl/nx/blob/master/packages/add-nx-to-monorepo/src/add-nx-to-monorepo.ts
 

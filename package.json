@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "prepare": "nx pub-get dart-parser"
+  },
   "dependencies": {
     "@nrwl/devkit": "14.1.7",
     "enquirer": "^2.3.6",
@@ -12,11 +15,6 @@
     "tslib": "^2.3.0",
     "yaml": "^2.0.1",
     "yargs-parser": "^21.0.1"
-  },
-  "scripts": {
-    "install-workspace-packages": "npm run build && npm ci",
-    "update-workspace-packages-deps": "npm run build && npm i",
-    "build": "nx run-many --all --target build"
   },
   "devDependencies": {
     "@nrwl/cli": "14.1.7",
@@ -44,7 +42,7 @@
   },
   "workspaces": [
     "packages/dart-parser",
-    "dist/packages/nx-dart",
-    "dist/packages/add-nx-dart-to-monorepo"
+    "packages/nx-dart",
+    "packages/add-nx-dart-to-monorepo"
   ]
 }
