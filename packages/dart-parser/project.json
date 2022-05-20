@@ -11,7 +11,7 @@
         "command": "dart pub get"
       }
     },
-    "build": {
+    "build-base": {
       "executor": "nx:run-commands",
       "dependsOn": ["pub-get"],
       "outputs": ["packages/dart-parser/dist"],
@@ -19,6 +19,10 @@
         "cwd": "packages/dart-parser",
         "command": "dart ./tool/build.dart"
       }
+    },
+    "build": {
+      "executor": "nx:noop",
+      "dependsOn": ["build-base"]
     }
   }
 }

@@ -2,7 +2,7 @@
   "sourceRoot": "packages/nx-dart/src",
   "projectType": "library",
   "targets": {
-    "build": {
+    "build-base": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -35,6 +35,10 @@
           }
         ]
       }
+    },
+    "build": {
+      "executor": "nx:noop",
+      "dependsOn": ["build-base"]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
