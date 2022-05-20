@@ -15,7 +15,6 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@nx-dart/dart-parser": ["packages/dart-parser/lib/index.d.ts"],
       "@nx-dart/e2e-utils": ["packages/e2e-utils/src/index.ts"],
       "@nx-dart/nx-dart": ["packages/nx-dart/src/index.ts"]
     }

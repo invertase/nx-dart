@@ -7,6 +7,7 @@ export default {
     },
   },
   transform: {
+    '^.+\\.js$': 'babel-jest',
     '^.+\\.ts$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
