@@ -1,4 +1,5 @@
 {
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "nx-dart",
   "affected": {
     "defaultBase": "main"
@@ -18,14 +19,8 @@
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": [
-          "pub-get",
-          "build-base",
-          "build",
-          "lint",
-          "test",
-          "e2e"
-        ]
+        "cacheableOperations": ["build-base", "build", "lint", "test", "e2e"],
+        "runtimeCacheInputs": ["node -v", "dart --version"]
       }
     }
   },
