@@ -5,7 +5,11 @@
   "targets": {
     "pub-get": {
       "executor": "nx:run-commands",
-      "outputs": [],
+      "outputs": [
+        "packages/dart-parser/.packages",
+        "packages/dart-parser/pubspec.lock",
+        "packages/dart-parser/.dart_tool/package_config.json"
+      ],
       "options": {
         "cwd": "packages/dart-parser",
         "command": "dart pub get"
@@ -21,7 +25,8 @@
       }
     },
     "build": {
-      "executor": "nx:noop"
+      "executor": "nx:noop",
+      "outputs": []
     }
   }
 }
