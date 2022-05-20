@@ -1,5 +1,10 @@
 {
-  "recommendations": [
+  "image": "dart",
+  "features": {
+    "common": {},
+    "node": {}
+  },
+  "extensions": [
     "nrwl.angular-console",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
