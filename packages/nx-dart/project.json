@@ -37,8 +37,11 @@
       }
     },
     "build": {
-      "executor": "nx:noop",
-      "dependsOn": ["build-base"]
+      "executor": "nx:run-commands",
+      "outputs": ["dist/packages/nx-dart"],
+      "options": {
+        "command": "node ./scripts/prepare-package-json.mjs dist/packages/nx-dart"
+      }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

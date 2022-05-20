@@ -12,20 +12,22 @@
         "tsConfig": "packages/add-nx-dart-to-monorepo/tsconfig.lib.json",
         "assets": [
           "packages/add-nx-dart-to-monorepo/*.md",
-          "packages/add-nx-dart-to-monorepo/LICENSE"
+          "packages/add-nx-dart-to-monorepo/LICENSE",
+          "packages/add-nx-dart-to-monorepo/bin/add-nx-dart-to-monorepo.js"
         ]
       }
     },
     "build": {
       "executor": "nx:run-commands",
+      "outputs": ["dist/packages/add-nx-dart-to-monorepo"],
       "options": {
         "commands": [
-          "node ./scripts/chmod.mjs dist/packages/add-nx-dart-to-monorepo/src/add-nx-dart-to-monorepo.js",
+          "node ./scripts/chmod.mjs dist/packages/add-nx-dart-to-monorepo/bin/add-nx-dart-to-monorepo.js",
+          "node ./scripts/prepare-package-json.mjs dist/packages/add-nx-dart-to-monorepo",
           "node ./scripts/replace-versions.mjs dist/packages/add-nx-dart-to-monorepo"
         ],
         "parallel": false
-      },
-      "dependsOn": ["build-base"]
+      }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

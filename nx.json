@@ -18,12 +18,31 @@
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["pub-get", "build", "lint", "test", "e2e"]
+        "cacheableOperations": [
+          "pub-get",
+          "build-base",
+          "build",
+          "lint",
+          "test",
+          "e2e"
+        ]
       }
     }
   },
   "targetDependencies": {
+    "build-base": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ],
     "build": [
+      {
+        "target": "build-base",
+        "projects": "self"
+      }
+    ],
+    "e2e": [
       {
         "target": "build",
         "projects": "dependencies"
