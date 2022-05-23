@@ -1,10 +1,20 @@
-`@nx-dart/nx-dart` is a [Nx] plugin, that adds support for developing Dart and
-Flutter packages in a Nx workspace.
+`nx-dart` is a [Nx] plugin, that adds support for developing Dart and Flutter
+packages in a Nx workspace.
 
-The plugin analyzes packages and their dependencies in the workspace and
-contributes to the Nx project graph.
+> This plugin is at an early stage of development. Please open an
+> [issue][issues] if you find a **bug** or have a **feature request**. Feel free
+> to open a [discussion][discussions], if you have a **question**.
 
-It provides executors to format, analyze, and test Dart packages.
+# Features
+
+- Surface dependencies between packages to the Nx project graph.
+- Executors:
+  - format
+  - analyze
+  - test
+- Generators:
+  - add-package
+  - change-lints
 
 # Getting started
 
@@ -24,22 +34,37 @@ In an existing monorepo, run the following command to add Nx and `nx-dart`:
 npx add-nx-dart-to-monorepo
 ```
 
-# Generators
+# Nx projects and Dart packages
 
-The `nx-dart` preset and `add-nx-dart-to-monorepo` make `nx-dart` the default
-generator collection. The rest of this document assumes that this is the case
-and uses the shorthand for generators.
+Every package that should be part of the Nx workspace needs to have a
+`project.json` file in the package root and needs to be registered in the
+`workspace.json` file at the root of the workspace.
+
+The `add-package` generator takes care of creating an initial `project.json`
+file and registering the project in `workspace.json`, under the package's name.
+
+If package B depends on package A and both live in the same workspace, the Nx
+project graph will reflect this dependency. Dependencies on local packages are
+**not automatically overridden** with path dependency for development, though.
+If this is something you need, implement your own mechanism for overriding
+dependencies or check out [Melos].
+
+Melos is a Dart/Flutter specific monorepo tool with support for conventional
+commit based versioning and publishing, among other features. Melos and Nx
+complement each other, and can be used together.
+
+# Generators
 
 ## add-package
 
 Adds an existing Dart package to the workspace.
 
-This command is usually used to integrate a package into the Nx workspace after
-creating it with `dart create` or `flutter create`:
+This generator is usually used to integrate a package into the Nx workspace
+after creating it with `dart create` or `flutter create`:
 
 ```shell
 flutter create -t app apps/counter
-npx nx g add-package apps/counter
+npx nx generate @nx-dart/nx-dart:add-package apps/counter
 ```
 
 ### Options
@@ -55,7 +80,7 @@ Lint rules are defined in the `analysis_options.yaml` file at the project root.
 These options apply to all packages in the workspace, that don't have a
 `analysis_options.yaml` file of their own.
 
-This generator changes the lint rules to on of the following:
+This generator changes the lint rules to one of the following:
 
 - `core`: Core rules from the [`lints`][lints] package.
 - `recommended`: Recommended rules from the [`lints`][lints] package.
@@ -64,7 +89,7 @@ This generator changes the lint rules to on of the following:
   rules.
 
 ```shell
-npx nx g change-lints flutter
+npx nx generator @nx-dart/nx-dart:change-lints flutter
 ```
 
 # Executors
@@ -73,7 +98,7 @@ npx nx g change-lints flutter
 
 Formats Dart files in a package.
 
-```json
+```jsonc
 // libs/foo/project.json
 {
   "targets": {
@@ -94,7 +119,7 @@ Formats Dart files in a package.
 
 Analyzes a Dart package.
 
-```json
+```jsonc
 // libs/foo/project.json
 {
   "targets": {
@@ -115,7 +140,7 @@ Analyzes a Dart package.
 
 Runs Dart or Flutter tests in a package.
 
-```json
+```jsonc
 // libs/foo/project.json
 {
   "targets": {
@@ -136,11 +161,12 @@ Runs Dart or Flutter tests in a package.
 
 ### Options
 
-- `targets`: The files or directories which contain the tests to run.
+- `targets`: The files or directories which contain the tests to run. When not
+  specified, all tests in the `test` directory are run.
 - `coverage`: Whether to collect coverage information. The `dart` tool does not
-  output lcov.info files by default. The executor converts the Dart coverage
-  data into a lcov.info file automatically. The `flutter` tool outputs an
-  lcov.info file by default.
+  output `lcov.info` files by default. The executor converts the Dart coverage
+  data into a `lcov.info` file automatically. The `flutter` tool outputs a
+  `lcov.info` file by default.
 
 All additional options are passed to the Dart or Flutter test tool.
 Abbreviations are not supported.
@@ -149,3 +175,6 @@ Abbreviations are not supported.
 [lints]: https://pub.dev/packages/lints
 [flutter_lints]: https://pub.dev/packages/flutter_lints
 [all_lints]: https://github.com/dart-lang/linter/blob/master/example/all.yaml
+[issues]: https://github.com/blaugold/nx-dart/issues
+[discussions]: https://github.com/blaugold/nx-dart/discussions
+[melos]: https://melos.invertase.dev
