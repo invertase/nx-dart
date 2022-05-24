@@ -69,7 +69,6 @@ export async function addHostedDependencyToPackage(
   await executeCommand({
     executable: 'dart',
     arguments: args,
-    expectedErrorExitCodes: [],
     cwd: path.resolve(workspaceRoot, packageRoot),
   });
 }
@@ -83,7 +82,6 @@ export async function removeDependencyFromPackage(
   await executeCommand({
     executable: 'dart',
     arguments: args,
-    expectedErrorExitCodes: [],
     cwd: path.resolve(workspaceRoot, packageRoot),
   });
 }

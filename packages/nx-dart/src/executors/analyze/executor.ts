@@ -14,6 +14,7 @@ export default async function runExecutor(
       executable: 'dart',
       arguments: args,
       cwd: projectRoot,
+      throwOnFailure: false,
     }),
   };
 }
