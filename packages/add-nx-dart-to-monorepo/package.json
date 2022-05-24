@@ -1,6 +1,6 @@
 {
   "name": "add-nx-dart-to-monorepo",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Add Nx to a monorepo containing Dart and Flutter packages.",
   "keywords": [
     "Monorepo",
