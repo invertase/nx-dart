@@ -22,6 +22,7 @@ describe('Test Executor', () => {
       executable: 'dart',
       arguments: defaultTestArguments,
       cwd: 'libs/a',
+      throwOnFailure: false,
     });
   });
 
@@ -36,6 +37,7 @@ describe('Test Executor', () => {
       executable: 'flutter',
       arguments: defaultTestArguments,
       cwd: 'libs/a',
+      throwOnFailure: false,
     });
   });
 
@@ -50,6 +52,7 @@ describe('Test Executor', () => {
       executable: 'dart',
       arguments: [...defaultTestArguments, 'a', 'b'],
       cwd: 'libs/a',
+      throwOnFailure: false,
     });
   });
 
@@ -64,6 +67,7 @@ describe('Test Executor', () => {
       executable: 'dart',
       arguments: [...defaultTestArguments, '--concurrency', '1'],
       cwd: 'libs/a',
+      throwOnFailure: false,
     });
   });
 
@@ -85,10 +89,12 @@ describe('Test Executor', () => {
           path.join('coverage', 'dart'),
         ],
         cwd: 'libs/a',
+        throwOnFailure: false,
       });
       expect(executeCommand).toHaveBeenCalledWith({
         executable: 'dart',
         arguments: ['pub', 'global', 'activate', 'coverage'],
+        throwOnFailure: false,
       });
       expect(executeCommand).toHaveBeenCalledWith({
         executable: 'dart',
@@ -104,6 +110,7 @@ describe('Test Executor', () => {
           path.join('coverage', 'lcov.info'),
         ],
         cwd: 'libs/a',
+        throwOnFailure: false,
       });
     });
 
@@ -123,6 +130,7 @@ describe('Test Executor', () => {
           path.join('coverage', 'lcov.info'),
         ],
         cwd: 'libs/a',
+        throwOnFailure: false,
       });
     });
   });
