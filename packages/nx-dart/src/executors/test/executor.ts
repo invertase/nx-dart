@@ -29,6 +29,7 @@ export default async function runExecutor(
     executable: tool,
     arguments: args,
     cwd: projectRoot,
+    throwOnFailure: false,
   });
 
   if (success && options.coverage && tool === 'dart') {
@@ -89,6 +90,7 @@ async function convertCoverageDataToLcov(projectRoot: string) {
   let success = await executeCommand({
     executable: 'dart',
     arguments: ['pub', 'global', 'activate', 'coverage'],
+    throwOnFailure: false,
   });
   if (!success) {
     return false;
@@ -109,6 +111,7 @@ async function convertCoverageDataToLcov(projectRoot: string) {
       coverageLcovFile,
     ],
     cwd: projectRoot,
+    throwOnFailure: false,
   });
   if (!success) {
     return false;

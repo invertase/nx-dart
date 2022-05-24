@@ -53,6 +53,7 @@ async function format(
     executable: 'dart',
     arguments: args,
     cwd: projectRoot,
+    throwOnFailure: false,
   });
 }
 
