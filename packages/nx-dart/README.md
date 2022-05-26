@@ -175,6 +175,6 @@ Abbreviations are not supported.
 [lints]: https://pub.dev/packages/lints
 [flutter_lints]: https://pub.dev/packages/flutter_lints
 [all_lints]: https://github.com/dart-lang/linter/blob/master/example/all.yaml
-[issues]: https://github.com/blaugold/nx-dart/issues
-[discussions]: https://github.com/blaugold/nx-dart/discussions
+[issues]: https://github.com/invertase/nx-dart/issues
+[discussions]: https://github.com/invertase/nx-dart/discussions
 [melos]: https://melos.invertase.dev

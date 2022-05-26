@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/blaugold/nx-dart"
+    "url": "https://github.com/invertase/nx-dart"
   },
-  "homepage": "https://github.com/blaugold/nx-dart/tree/main/packages/dart-parser",
+  "homepage": "https://github.com/invertase/nx-dart/tree/main/packages/dart-parser",
   "bugs": {
-    "url": "https://github.com/blaugold/nx-dart/issues"
+    "url": "https://github.com/invertase/nx-dart/issues"
   },
   "license": "MIT",
   "main": "./dist/index.js",

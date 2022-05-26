@@ -385,7 +385,7 @@ function printFinalMessage(repoRoot: string) {
       `- Run "${
         getPackageManagerCommand(repoRoot).exec
       } nx graph" to see the structure of the monorepo.`,
-      `- Learn more at https://github.com/blaugold/nx-dart/tree/main/packages/nx-dart`,
+      `- Learn more at https://github.com/invertase/nx-dart/tree/main/packages/nx-dart`,
     ],
   });
 }

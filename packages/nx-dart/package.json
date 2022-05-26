@@ -11,11 +11,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/blaugold/nx-dart"
+    "url": "https://github.com/invertase/nx-dart"
   },
-  "homepage": "https://github.com/blaugold/nx-dart/tree/main/packages/nx-dart",
+  "homepage": "https://github.com/invertase/nx-dart/tree/main/packages/nx-dart",
   "bugs": {
-    "url": "https://github.com/blaugold/nx-dart/issues"
+    "url": "https://github.com/invertase/nx-dart/issues"
   },
   "license": "MIT",
   "main": "../../dist/packages/nx-dart/src/index.js",
