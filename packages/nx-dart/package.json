@@ -1,6 +1,6 @@
 {
   "name": "@nx-dart/nx-dart",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Nx plugin, that adds support for developing Dart and Flutter packages in a Nx workspace",
   "keywords": [
     "Monorepo",
@@ -22,7 +22,7 @@
   "generators": "./generators.json",
   "executors": "./executors.json",
   "dependencies": {
-    "@nx-dart/dart-parser": "^0.1.0",
+    "@nx-dart/dart-parser": "^0.2.0",
     "tslib": "^2.3.0"
   },
   "scripts": {
