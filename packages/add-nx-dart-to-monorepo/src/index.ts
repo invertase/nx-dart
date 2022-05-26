@@ -5,9 +5,9 @@ import { output, readJsonFile, writeJsonFile } from '@nrwl/devkit';
 import { execSync } from 'child_process';
 import * as enquirer from 'enquirer';
 import * as fs from 'fs';
-import { isGitIgnoredSync } from 'globby';
 import * as path from 'path';
 import * as yargsParser from 'yargs-parser';
+import { isGitIgnored } from './globby';
 
 const parsedArgs = yargsParser(process.argv, {
   boolean: ['nxCloud'],
@@ -41,7 +41,7 @@ async function addNxDartToMonorepo() {
     title: `🧑‍🔧 Analyzing the source code`,
   });
 
-  const packageRoots = projectPubspecs(repoRoot).map(path.dirname);
+  const packageRoots = (await projectPubspecs(repoRoot)).map(path.dirname);
 
   if (packageRoots.length === 0) {
     output.error({ title: `Cannot find any projects in this monorepo` });
@@ -135,12 +135,14 @@ async function askAboutAnalysisOptionsMigration(): Promise<string | undefined> {
     );
 }
 
-function projectPubspecs(repoRoot: string): string[] {
-  return allPubspecs(repoRoot).filter((p) => p !== 'pubspec.yaml');
+async function projectPubspecs(repoRoot: string) {
+  return (await allPubspecs(repoRoot)).filter((p) => p !== 'pubspec.yaml');
 }
 
-function allPubspecs(repoRoot: string) {
-  const isIgnored = isGitIgnoredSync({ cwd: repoRoot });
+async function allPubspecs(repoRoot: string) {
+  const isIgnored = await isGitIgnored({
+    cwd: repoRoot,
+  });
 
   function inner(dirPath: string) {
     const relativeDirPath = path.relative(repoRoot, dirPath);
@@ -168,11 +170,10 @@ function allPubspecs(repoRoot: string) {
             if (child !== 'example') {
               pubspecPaths.push(...inner(childPath));
             }
-          } else {
-            if (child === 'pubspec.yaml') {
-              pubspecPaths.push(childPath);
-            }
+          } else if (child === 'pubspec.yaml') {
+            pubspecPaths.push(relativeChildPath);
           }
+
           // eslint-disable-next-line no-empty
         } catch (e) {}
       });

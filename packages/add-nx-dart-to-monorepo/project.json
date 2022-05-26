@@ -14,7 +14,8 @@
         "assets": [
           "packages/add-nx-dart-to-monorepo/*.md",
           "packages/add-nx-dart-to-monorepo/LICENSE",
-          "packages/add-nx-dart-to-monorepo/bin/add-nx-dart-to-monorepo.js"
+          "packages/add-nx-dart-to-monorepo/bin/add-nx-dart-to-monorepo.js",
+          "packages/add-nx-dart-to-monorepo/src/globby.js"
         ]
       }
     },
