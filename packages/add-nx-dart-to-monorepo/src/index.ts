@@ -1,13 +1,12 @@
 // Adapted from add-nx-to-monorepo
 // https://github.com/nrwl/nx/blob/master/packages/add-nx-to-monorepo/src/add-nx-to-monorepo.ts
 
-import { output } from '@nrwl/devkit';
+import { output, readJsonFile, writeJsonFile } from '@nrwl/devkit';
 import { execSync } from 'child_process';
 import * as enquirer from 'enquirer';
 import * as fs from 'fs';
-import ignore from 'ignore';
+import { isGitIgnoredSync } from 'globby';
 import * as path from 'path';
-import * as stripJsonComments from 'strip-json-comments';
 import * as yargsParser from 'yargs-parser';
 
 const parsedArgs = yargsParser(process.argv, {
@@ -137,49 +136,52 @@ async function askAboutAnalysisOptionsMigration(): Promise<string | undefined> {
 }
 
 function projectPubspecs(repoRoot: string): string[] {
-  return allPubspecs(repoRoot, repoRoot).filter((p) => p !== 'pubspec.yaml');
+  return allPubspecs(repoRoot).filter((p) => p !== 'pubspec.yaml');
 }
 
-function allPubspecs(repoRoot: string, dirName: string) {
-  const ignoredGlobs = getIgnoredGlobs(repoRoot);
-  const relDirName = path.relative(repoRoot, dirName);
-  if (
-    relDirName &&
-    (ignoredGlobs.ignores(relDirName) ||
-      relDirName.indexOf(`node_modules`) > -1)
-  ) {
-    return [];
+function allPubspecs(repoRoot: string) {
+  const isIgnored = isGitIgnoredSync({ cwd: repoRoot });
+
+  function inner(dirPath: string) {
+    const relativeDirPath = path.relative(repoRoot, dirPath);
+    if (
+      relativeDirPath &&
+      (isIgnored(relativeDirPath) ||
+        relativeDirPath.indexOf(`node_modules`) > -1)
+    ) {
+      return [];
+    }
+
+    const pubspecPaths: string[] = [];
+    try {
+      fs.readdirSync(dirPath).forEach((child) => {
+        const childPath = path.join(dirPath, child);
+        const relativeChildPath = path.relative(repoRoot, childPath);
+
+        if (isIgnored(relativeChildPath)) {
+          return;
+        }
+
+        try {
+          const stat = fs.statSync(childPath);
+          if (stat.isDirectory()) {
+            if (child !== 'example') {
+              pubspecPaths.push(...inner(childPath));
+            }
+          } else {
+            if (child === 'pubspec.yaml') {
+              pubspecPaths.push(childPath);
+            }
+          }
+          // eslint-disable-next-line no-empty
+        } catch (e) {}
+      });
+      // eslint-disable-next-line no-empty
+    } catch (e) {}
+    return pubspecPaths;
   }
 
-  let res: string[] = [];
-  try {
-    fs.readdirSync(dirName).forEach((c) => {
-      const child = path.join(dirName, c);
-      if (ignoredGlobs.ignores(path.relative(repoRoot, child))) {
-        return;
-      }
-      try {
-        const s = fs.statSync(child);
-        if (!s.isDirectory() && c === 'pubspec.yaml') {
-          res.push(path.relative(repoRoot, child));
-        } else if (s.isDirectory() && c !== 'example') {
-          res = [...res, ...allPubspecs(repoRoot, child)];
-        }
-        // eslint-disable-next-line no-empty
-      } catch (e) {}
-    });
-    // eslint-disable-next-line no-empty
-  } catch (e) {}
-  return res;
-}
-
-function getIgnoredGlobs(repoRoot: string) {
-  const ig = ignore();
-  try {
-    ig.add(fs.readFileSync(`${repoRoot}/.gitignore`).toString());
-    // eslint-disable-next-line no-empty
-  } catch (e) {}
-  return ig;
+  return inner(repoRoot);
 }
 
 const defaultPackageJson = `
@@ -196,7 +198,8 @@ function ensureWorkspacePackageJson(repoRoot: string) {
 }
 
 function addDepsToPackageJson(repoRoot: string, useCloud: boolean) {
-  const json = readJsonFile(repoRoot, 'package.json');
+  const packageJsonPath = path.join(repoRoot, 'package.json');
+  const json = readJsonFile(packageJsonPath);
   if (!json.devDependencies) json.devDependencies = {};
   json.devDependencies['nx'] = 'NX_VERSION';
   json.devDependencies['@nrwl/cli'] = 'NX_VERSION';
@@ -212,21 +215,11 @@ function addDepsToPackageJson(repoRoot: string, useCloud: boolean) {
   if (useCloud) {
     json.devDependencies['@nrwl/nx-cloud'] = 'latest';
   }
-  writeJsonFile(repoRoot, 'package.json', json);
-}
-
-function readJsonFile(repoRoot: string, file: string) {
-  return JSON.parse(
-    stripJsonComments(fs.readFileSync(path.join(repoRoot, file), 'utf-8'))
-  );
-}
-
-function writeJsonFile(repoRoot: string, file: string, json: unknown) {
-  fs.writeFileSync(path.join(repoRoot, file), JSON.stringify(json, null, 2));
+  writeJsonFile(packageJsonPath, json);
 }
 
 function createNxJson(repoRoot: string) {
-  writeJsonFile(repoRoot, 'nx.json', {
+  writeJsonFile(path.join(repoRoot, 'nx.json'), {
     $schema: './node_modules/nx/schemas/nx-schema.json',
     affected: {
       defaultBase: deduceDefaultBase(),
@@ -289,7 +282,7 @@ function deduceDefaultBase() {
 }
 
 function createWorkspaceJson(repoRoot: string) {
-  writeJsonFile(repoRoot, 'workspace.json', {
+  writeJsonFile(path.join(repoRoot, 'workspace.json'), {
     $schema: './node_modules/nx/schemas/workspace-schema.json',
     version: 2,
     projects: {},
@@ -319,14 +312,23 @@ function setupLintRules(repoRoot: string, lints: string) {
 }
 
 function setupPackage(repoRoot: string, packageRoot: string) {
-  execSync(
-    `${
-      getPackageManagerCommand(repoRoot).exec
-    } nx g @nx-dart/nx-dart:add-package ${packageRoot}`,
-    {
+  const command = `${
+    getPackageManagerCommand(repoRoot).exec
+  } nx g @nx-dart/nx-dart:add-package ${packageRoot}`;
+
+  try {
+    execSync(command, {
       stdio: 'inherit',
-    }
-  );
+    });
+  } catch (e) {
+    output.error({
+      title: `Could not add package at ${packageRoot}`,
+      bodyLines: [
+        'After resolving the issue, run the following command to add the package:',
+        command,
+      ],
+    });
+  }
 }
 
 function initCloud(repoRoot: string) {
