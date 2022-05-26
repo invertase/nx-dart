@@ -9,7 +9,7 @@
   "dependencies": {
     "@nrwl/devkit": "14.1.7",
     "enquirer": "^2.3.6",
-    "ignore": "^5.2.0",
+    "globby": "^13.1.1",
     "node-fetch": "^2.6.7",
     "strip-json-comments": "^3.1.1",
     "tslib": "^2.3.0",

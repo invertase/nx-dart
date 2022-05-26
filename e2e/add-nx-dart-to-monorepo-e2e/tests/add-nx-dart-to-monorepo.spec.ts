@@ -19,7 +19,7 @@ describe('add-nx-dart-to-monorepo', () => {
 
   it('does not throw', async () => {
     newNonNxWorkspace();
-    writePubspec('packages/a/pubspec.yaml', {
+    writePubspec('packages/a', {
       name: 'a',
     });
 
